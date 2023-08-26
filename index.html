@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>P.L.Revolution</title>
+  <meta name="description" content="オンラインゲーム。">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./dist/bundle.js" defer></script>
+  <!-- <link rel="icon" href="./favicon.ico" sizes="any"> -->
+</head>
+<body>
+  <div id="warning">端末が縦向きかまたは対応してない可能性があります。</div>
+  <div id="wrapper">
+    <div class="side-container">
+      <div class="buttons-container" style="height: 100%;max-height: 200px;flex-wrap: wrap;">
+        <div id="top" class="button-container">
+          <button class="controller">上</button>
+          <div class="button-size"></div>
+        </div>
+        <div class="buttons-container justify-between">
+          <div id="left" class="button-container">
+            <button class="controller">左</button>
+            <div class="button-size"></div>
+          </div>
+          <div id="right" class="button-container">
+            <button class="controller">右</button>
+            <div class="button-size"></div>
+          </div>
+        </div>
+        <div id="bottom" class="button-container">
+          <button class="controller">下</button>
+          <div class="button-size"></div>
+        </div>
+      </div>
+    </div>
+    <div id="canvas-container">
+      <div id="start-buttons">
+        <button class="button" onclick="lib.onStartGameClicked()">start</button>
+      </div>
+      <div id="canvas-frame">
+        <canvas id="game-canvas"></canvas>
+      </div>
+    </div>
+    <div class="side-container">
+      <div class="buttons-container justify-between">
+        <div id="execute" class="button-container">
+          <button class="controller">A</button>
+          <div class="button-size"></div>
+        </div>
+        <div id="cancel" class="button-container">
+          <button class="controller">B</button>
+          <div class="button-size"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
