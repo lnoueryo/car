@@ -1,16 +1,18 @@
 import { CanvasManager } from "./canvas_manager"
 import { Controller } from "./controller"
-import { MainPlayer } from "./draw_objects/player/main_player"
-import { RoadFactory } from './draw_objects/road';
+import { Course } from "./course/course";
+import { Camera } from "./draw_objects/camera/camera";
+import { MainKart } from "./draw_objects/kart/main_kart"
+import { RoadFactory } from './draw_objects/path';
 
 export class Game {
-    private roads
+    private course: Course
     private players = []
     private startTime = 0
     private currentTime = 0
     private lastTimestamp = 0
     private keysPressed = {};
-    constructor(private cm: CanvasManager, private controller: Controller, private mainPlayer) {}
+    constructor(private cm: CanvasManager, private controller: Controller, private mainKart: MainKart, private camera: Camera) {}
 
     mashButton = (func) => {
         return (e)=> {
@@ -32,58 +34,39 @@ export class Game {
     }
 
     startGame() {
-        if(!this.roads) throw('No Course')
+        if(!this.course) throw('No Course')
 
         this.controller.setTop(
-            this.mashButton(() => this.mainPlayer.accelerate()),
-            this.endButton(() => this.mainPlayer.decelerate())
+            this.mashButton(() => {
+                this.mainKart.accelerate()
+                this.mainKart.position.addPoint(this.mainKart.position.x, this.mainKart.velocity, this.mainKart.position.z)
+            }),
+            this.endButton(() => this.mainKart.decelerate())
         )
         this.controller.setBottom(
-            this.mashButton(() => this.mainPlayer.brake()),
-            this.endButton(() => this.mainPlayer.decelerate())
+            this.mashButton(() => this.mainKart.brake()),
+            this.endButton(() => this.mainKart.decelerate())
         )
 
         this.controller.setLeft(
-            () => this.mainPlayer.turnLeft(),
-            () => this.mainPlayer.goStraight()
+            () => this.mainKart.turnLeft(),
+            () => this.mainKart.goStraight()
         )
         this.controller.setRight(
-            () => this.mainPlayer.turnRight(),
-            () => this.mainPlayer.goStraight()
+            () => this.mainKart.turnRight(),
+            () => this.mainKart.goStraight()
         )
 
-        for(let road of this.roads) {
-            road.adjustSize(this.cm.ratio)
-            road.rb.x *= 7
-            road.rt.x *= 7
-            road.lb.x *= 7
-            road.lt.x *= 7
-            road.lt.y *= 7
-            road.rt.y *= 7
-            road.lb.y *= 7
-            road.rb.y *= 7
+        const x = this.cm.width / 2
+        const y = this.cm.height / 2
+        const z = 0
 
-            road.lb.x += this.cm.width / 2
-            road.rb.x += this.cm.width / 2
-            road.lt.x += this.cm.width / 2
-            road.rt.x += this.cm.width / 2
-
-            road.lb.y += this.cm.height / 2
-            road.rb.y += this.cm.height / 2
-            road.lt.y += this.cm.height / 2
-            road.rt.y += this.cm.height / 2
+        for(const path of this.course.paths) {
+            path.addPosition(x, y, z)
         }
-        this.mainPlayer.adjustSize(this.cm.ratio)
-        this.mainPlayer.adjustSpeed(this.cm.ratio)
-        this.mainPlayer.lb.x += this.cm.width / 2
-        this.mainPlayer.lt.x += this.cm.width / 2
-        this.mainPlayer.rb.x += this.cm.width / 2
-        this.mainPlayer.rt.x += this.cm.width / 2
-        this.mainPlayer.lt.y += this.cm.height / 2
-        this.mainPlayer.rt.y += this.cm.height / 2
-        this.mainPlayer.lb.y += this.cm.height / 2
-        this.mainPlayer.rb.y += this.cm.height / 2
-        this.mainPlayer.shiftBaselineForward(this.cm.ratio)
+        this.mainKart.addPosition(x, y, z)
+        this.mainKart.shiftBaselineForward()
+        this.camera.changeScale(7)
         this.loop(0)
     }
 
@@ -91,12 +74,13 @@ export class Game {
 
         this.updateCurrentTime(timestamp)
         this.cm.resetCanvas()
-        this.rotateObjects()
-        this.moveObjects()
-        for(let road of this.roads) {
-            this.cm.fillCourse(road)
+        // this.rotateObjects()
+        // this.moveObjects()
+        for(let path of this.course.paths) {
+            this.cm.fillPolygon(path, this.camera)
         }
-        this.cm.fillPlayer(this.mainPlayer)
+        this.cm.fillPolygon(this.mainKart, this.camera)
+        return;
         // if(up_push && left_push) {
         //     this.cm.ctx.fillStyle = "red" ;
         // }
@@ -155,25 +139,23 @@ export class Game {
         this.lastTimestamp = timestamp;
     }
 
-    rotateObjects() {
-        for(let object of this.objects) {
-            object.rotateObject(this.mainPlayer.findMidpoint(), this.mainPlayer.steeringAngle)
-        }
-    }
+    // rotateObjects() {
+    //     for(let object of this.objects) {
+    //         object.rotateObject(this.mainKart.findMidpoint(), this.mainKart.angle)
+    //     }
+    // }
 
-    moveObjects() {
-        for(let object of this.objects) {
-            object.moveObject(this.mainPlayer.currentSpeed)
-        }
-    }
+    // moveObjects() {
+    //     for(let object of this.objects) {
+    //         object.moveObject(this.mainKart.angle)
+    //     }
+    // }
 
-    loadCourse(roadsJson) {
-        this.roads = roadsJson.map(road => {
-            return RoadFactory.createRoad(road)
-        })
+    loadCourse(course: Course) {
+        this.course = course
     }
 
     get objects() {
-        return [...this.roads]
+        return [...this.course.paths]
     }
 }

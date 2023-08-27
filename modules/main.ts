@@ -1,20 +1,43 @@
 import { CanvasManager } from './canvas_manager'
 import { Game } from './game'
 import { Controller } from './controller'
-import { MainPlayer } from './draw_objects/player/main_player'
+import { MainKart } from './draw_objects/kart/main_kart'
 import { Point } from './draw_objects/point'
 import course from '../courses/basic.json'
+import { Course } from './course/course'
+import { Camera } from './draw_objects/camera/camera'
 
 const createMainPlayer = () => {
-    const lb = new Point(-25, 0, 0)
-    const rb = new Point(25, 0, 0)
-    const rt = new Point(25, -75, 0)
-    const lt = new Point(-25, -75, 0)
-    return new MainPlayer(
-        lb,
-        rb,
-        rt,
-        lt,
+    const vertices = [new Point(-5, 0, 0), new Point(5, 0, 0), new Point(5, 10, 0), new Point(-5, 10, 0)]
+    const position = new Point(0, 0, 0)
+    const color = 'blue'
+    const mass = 300
+    return new MainKart(
+        vertices,
+        position,
+        color,
+        mass,
+        0,
+        0,
+        200,
+        10,
+        0.1,
+        0.2
+    )
+}
+
+const createCamera = () => {
+    const vertices = [new Point(0, 0, 0), new Point(0, 0, 0), new Point(0, 0, 0), new Point(0, 0, 0)]
+    const position = new Point(0, 0, 0)
+    const color = 'black'
+    const mass = 0
+    return new Camera(
+        vertices,
+        position,
+        color,
+        mass,
+        0,
+        0,
         200,
         10,
         0.1,
@@ -25,8 +48,7 @@ const createMainPlayer = () => {
 export const onStartGameClicked = () => {
     const buttons = document.getElementById('start-buttons')
     buttons.classList.add('hide');
-    console.log(course.roads)
-    game.loadCourse(course.roads)
+    game.loadCourse(Course.convertJson(course))
     game.startGame()
     // timer = setInterval(() => {
     //     if(game.isGameOver()) {
@@ -88,7 +110,9 @@ const main = () => {
     const cm = new CanvasManager(canvas)
     const mainPlayer = createMainPlayer()
 
-    game = new Game(cm, contoller, mainPlayer)
+    const camera = createCamera()
+
+    game = new Game(cm, contoller, mainPlayer, camera)
     // document.documentElement.requestFullscreen();
     showController()
     window.addEventListener('resize', () => {

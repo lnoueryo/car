@@ -1,58 +1,57 @@
+import { CanvasManager } from "../canvas_manager";
+import { DynamicObject } from "./base/dynamic_object";
+import { Camera } from "./camera/camera";
+
 export class Point {
-    constructor(public x: number, public y: number, public z: number) {}
+    constructor(
+        public x: number,
+        public y: number,
+        public z: number,
+    ) {}
+
     static convertJson(pointJson) {
         const { x, y, z } = pointJson;
         return new Point(x, y, z)
     }
-    // rotatePoint(axis: Point, angle: number) {
-    //     const rad = (Math.PI / 180) * angle;
-    //     const cosAngle = Math.cos(rad);
-    //     const sinAngle = Math.sin(rad);
 
-    //     // Translate point to the origin
-    //     const px = this.x - axis.x;
-    //     const py = this.y - axis.y;
-    //     const pz = this.z - axis.z;
+    addPoint(x: number, y: number, z: number) {
+        return new Point(this.x + x, this.y + y, this.z + z)
+    }
 
-    //     // Rotation matrix for rotation around arbitrary axis
-    //     const [ux, uy, uz] = [axis.x, axis.y, axis.z];
-    //     const ux2 = ux * ux;
-    //     const uy2 = uy * uy;
-    //     const uz2 = uz * uz;
+    getBase(point) {
+        //底辺
+        return point.x - this.x;
+    }
 
-    //     const rotatedX = (cosAngle + ux2 * (1 - cosAngle)) * px
-    //                     + (ux * uy * (1 - cosAngle) - uz * sinAngle) * py
-    //                     + (ux * uz * (1 - cosAngle) + uy * sinAngle) * pz;
+    getDistance(point) {
+        // 斜辺
+        const deltaX = point.x - this.x;
+        const deltaY = point.y - this.y;
+        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    }
 
-    //     const rotatedY = (uy * ux * (1 - cosAngle) + uz * sinAngle) * px
-    //                     + (cosAngle + uy2 * (1 - cosAngle)) * py
-    //                     + (uy * uz * (1 - cosAngle) - ux * sinAngle) * pz;
+    adjustScale(camera: Camera) {
+        const x = this.x * camera.scale;
+        const y = this.y * camera.scale;
+        const z = this.z * camera.scale;
+        return new Point(x, y, z)
+    }
 
-    //     const rotatedZ = (uz * ux * (1 - cosAngle) - uy * sinAngle) * px
-    //                     + (uz * uy * (1 - cosAngle) + ux * sinAngle) * py
-    //                     + (cosAngle + uz2 * (1 - cosAngle)) * pz;
+    adjustCanvasScale(cm: CanvasManager) {
+        const x = this.x * cm.ratio;
+        const y = this.y * cm.ratio;
+        const z = this.z * cm.ratio;
+        return new Point(x, y, z)
+    }
 
-    //     // Translate back
-    //     this.x = rotatedX + axis.x;
-    //     this.y = rotatedY + axis.y;
-    //     this.z = rotatedZ + axis.z;
-    //     console.log(axis, angle)
-    // }
-    rotatePoint(axis: Point, angle: number) {
-        const rad = (Math.PI / 180) * angle;
+    rotatePoint(object: DynamicObject) {
+        const rad = (Math.PI / 180) * object.angle;
         const cosAngle = Math.cos(rad);
         const sinAngle = Math.sin(rad);
-
-        const x = cosAngle * (this.x - axis.x) - sinAngle * (this.y - axis.y) + axis.x;
-        const y = sinAngle * (this.x - axis.x) + cosAngle * (this.y - axis.y) + axis.y;
-        this.x = x
-        this.y = y
+        const midpoint = object.findMidpoint()
+        const x = cosAngle * (this.x - midpoint.x) - sinAngle * (this.y - midpoint.y) + midpoint.x;
+        const y = sinAngle * (this.x - midpoint.x) + cosAngle * (this.y - midpoint.y) + midpoint.y;
+        const z = 0;
+        return new Point(x, y, z)
     }
-}
-
-export interface Points {
-    lb: Point,
-    rb: Point,
-    rt: Point,
-    lt: Point,
 }

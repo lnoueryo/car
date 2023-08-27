@@ -1,4 +1,7 @@
 import { Box } from './box'
+import { BaseObject } from './draw_objects/base/base_object';
+import { Camera } from './draw_objects/camera/camera';
+import { Kart } from './draw_objects/kart/kart';
 let up_push = false;
 let down_push = false;
 let left_push = false;
@@ -12,7 +15,7 @@ const PLAYER_DELAY = 1
 export class CanvasManager {
     public ctx;
     private boxCreationProbability = 0.07
-    constructor(private canvas) {
+    constructor(private canvas: HTMLCanvasElement) {
         canvas.width = CANVAS_WIDTH_PIXEL;
         canvas.height = CANVAS_HEIGHT_PIXEL;
         this.ctx = this.canvas.getContext('2d')
@@ -81,7 +84,22 @@ export class CanvasManager {
         this.ctx.fillRect(box.x, box.y, box.width, box.height);
     }
 
-    fillPlayer(player) {
+    fillPolygon(object: BaseObject, camera: Camera) {
+        this.ctx.fillStyle = object.color;
+        this.ctx.strokeStyle = 'blue';
+        const [firstVertex, ...restVertices] = object.createVerticesForDrawing(camera, this)
+        console.log(restVertices, 'Hello')
+        this.ctx.beginPath();
+        this.ctx.moveTo(firstVertex.x, firstVertex.y);
+        restVertices.forEach(vertex => {
+            console.log(vertex)
+            this.ctx.lineTo(vertex.x, vertex.y);
+        });
+        this.ctx.closePath();
+        this.ctx.fill();
+    }
+
+    fillPlayer(kart: Kart) {
         this.ctx.strokeStyle = 'blue';
         // this.ctx.strokeStyle = "#0ff";
         this.ctx.fillStyle = 'red';
@@ -93,7 +111,7 @@ export class CanvasManager {
         // this.ctx.closePath();
         // this.ctx.fill();
         // this.ctx.strokeRect(player.lt.x, player.lt.y, player.width, player.height);
-        this.ctx.fillRect(player.lt.x, player.lt.y, player.width, player.height);
+        // this.ctx.fillRect(player.lt.x, player.lt.y, player.width, player.height);
         // this.ctx.fillRect(170, -1, 50, 50);
         // this.ctx.fillRect(player.x + player.width - 15, player.y + 5, player.width / 5, player.height / 5);
         // this.ctx.fillRect(player.x + 10, player.y + player.height - 15, player.width - 20, player.height / 5);

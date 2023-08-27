@@ -1,17 +1,20 @@
-import { Player } from ".";
+import { Kart } from "./kart";
+import { Point } from "../point";
 
-export class MainPlayer extends Player {
+export class MainKart extends Kart {
     constructor(
-        protected lb,
-        protected rb,
-        protected rt,
-        protected lt,
-        protected maxSpeed,
-        protected accelerationTime,
-        protected decelerationRate,
-        protected brakeDecelerationRate
+        vertices: Point[],
+        position: Point,
+        color: string,
+        mass: number,
+        friction: number,
+        restitution: number,
+        maxVelocity: number,
+        accelerationTime: number,
+        decelerationRate: number,
+        brakeDecelerationRate: number
     ) {
-        super(lb, rb, rt, lt, maxSpeed, accelerationTime, decelerationRate, brakeDecelerationRate)
+        super(vertices, position, color, mass, friction, restitution, maxVelocity, accelerationTime, decelerationRate, brakeDecelerationRate)
     }
     // ステアリング角から曲率半径を計算する関数
     curvatureRadiusFromSteeringAngle(delta, wheelbase) {
