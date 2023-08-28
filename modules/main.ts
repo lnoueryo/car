@@ -20,14 +20,14 @@ const createMainPlayer = () => {
         0,
         0,
         200,
-        10,
-        0.1,
-        0.2
+        20,
+        0.05,
+        0.1
     )
 }
 
 const createCamera = () => {
-    const vertices = [new Point(0, 0, 0), new Point(0, 0, 0), new Point(0, 0, 0), new Point(0, 0, 0)]
+    const vertices = [new Point(-5, 0, 0), new Point(5, 0, 0), new Point(5, 10, 0), new Point(-5, 10, 0)]
     const position = new Point(0, 0, 0)
     const color = 'black'
     const mass = 0
@@ -39,9 +39,9 @@ const createCamera = () => {
         0,
         0,
         200,
-        10,
-        0.1,
-        0.2
+        20,
+        0.05,
+        0.1
     )
 }
 

@@ -2,6 +2,7 @@ import { Box } from './box'
 import { BaseObject } from './draw_objects/base/base_object';
 import { Camera } from './draw_objects/camera/camera';
 import { Kart } from './draw_objects/kart/kart';
+import { Curve } from './draw_objects/path';
 let up_push = false;
 let down_push = false;
 let left_push = false;
@@ -13,8 +14,7 @@ const CANVAS_RATIO = CANVAS_WIDTH_PIXEL / CANVAS_HEIGHT_PIXEL
 const SIZE_RATIO = 1000
 const PLAYER_DELAY = 1
 export class CanvasManager {
-    public ctx;
-    private boxCreationProbability = 0.07
+    private ctx;
     constructor(private canvas: HTMLCanvasElement) {
         canvas.width = CANVAS_WIDTH_PIXEL;
         canvas.height = CANVAS_HEIGHT_PIXEL;
@@ -56,17 +56,9 @@ export class CanvasManager {
     // });
     }
 
-    fillCourse(road) {
-        this.ctx.fillStyle = "#e2e2e2";
-        this.ctx.beginPath();
-        this.ctx.moveTo(road.lt.x, road.lt.y);
-        this.ctx.lineTo(road.lb.x, road.lb.y);
-        this.ctx.lineTo(road.rb.x, road.rb.y);
-        this.ctx.lineTo(road.rt.x, road.rt.y);
-        this.ctx.closePath();
-        this.ctx.fill();
-        this.ctx.restore();
-        // this.fillPlayer(players[0])
+    fillBackground() {
+        this.ctx.fillStyle = 'rgb( 0, 128, 0)';
+        this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
     isGameOver(players) {
@@ -86,7 +78,6 @@ export class CanvasManager {
 
     fillPolygon(object: BaseObject, camera: Camera) {
         this.ctx.fillStyle = object.color;
-        this.ctx.strokeStyle = 'blue';
         const [firstVertex, ...restVertices] = object.createVerticesForDrawing(camera, this)
         this.ctx.beginPath();
         this.ctx.moveTo(firstVertex.x, firstVertex.y);
@@ -97,37 +88,14 @@ export class CanvasManager {
         this.ctx.fill();
     }
 
-    fillPlayer(kart: Kart) {
-        this.ctx.strokeStyle = 'blue';
-        // this.ctx.strokeStyle = "#0ff";
-        this.ctx.fillStyle = 'red';
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(player.lt.x, player.lt.y);
-        // this.ctx.lineTo(player.lb.x, player.lb.y);
-        // this.ctx.lineTo(player.rb.x, player.rb.y);
-        // this.ctx.lineTo(player.rt.x, player.rt.y);
-        // this.ctx.closePath();
-        // this.ctx.fill();
-        // this.ctx.strokeRect(player.lt.x, player.lt.y, player.width, player.height);
-        // this.ctx.fillRect(player.lt.x, player.lt.y, player.width, player.height);
-        // this.ctx.fillRect(170, -1, 50, 50);
-        // this.ctx.fillRect(player.x + player.width - 15, player.y + 5, player.width / 5, player.height / 5);
-        // this.ctx.fillRect(player.x + 10, player.y + player.height - 15, player.width - 20, player.height / 5);
-    }
-
-    createBox() {
-        const width = Math.random() * this.canvas.width / 4.2
-        const height = Math.random() * 50 + 20
-        const x = this.canvas.width
-        const y = this.canvas.height - 100 - Math.random() * 100
-        const speed = (Math.random() * (15 - 3) + 3)
-        const box = new Box(width, height, x, y, speed)
-        // this.boxes.push(box);
-    }
-
-    deleteBox(box) {
-        // const index = this.boxes.indexOf(box);
-        // this.boxes.splice(index, 1);
+    fillSector(object: Curve, camera: Camera) {
+        console.log(object)
+        this.ctx.fillStyle = object.color;
+        this.ctx.beginPath();
+        this.ctx.moveTo(object.left.x, object.left.y);
+        this.ctx.arc(object.left.x, object.left.y, object.left.getDistance(object.right), object.startAngle, object.endAngle, false);
+        this.ctx.closePath();
+        this.ctx.fill();
     }
 
     resetCanvas() {

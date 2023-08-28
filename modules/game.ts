@@ -3,7 +3,7 @@ import { Controller } from "./controller"
 import { Course } from "./course/course";
 import { Camera } from "./draw_objects/camera/camera";
 import { MainKart } from "./draw_objects/kart/main_kart"
-import { RoadFactory } from './draw_objects/path';
+import { Curve, Rectangle, RoadFactory } from './draw_objects/path';
 
 export class Game {
     private course: Course
@@ -38,16 +38,14 @@ export class Game {
 
         this.controller.setTop(
             this.mashButton(() => {
-                this.mainKart.accelerate(this.cm)
-                this.mainKart.addPosition(0, -this.mainKart.velocity, 0)
-                this.camera.chaseMainKart(this.mainKart)
+                this.mainKart.accelerate(this.cm.ratio)
             }),
-            this.endButton(() => this.mainKart.decelerate())
+            this.endButton(() => this.mainKart.decelerate(this.cm.ratio))
         )
 
         this.controller.setBottom(
-            this.mashButton(() => this.mainKart.brake()),
-            this.endButton(() => this.mainKart.decelerate())
+            this.mashButton(() => this.mainKart.brake(this.cm.ratio)),
+            this.endButton(() => this.mainKart.decelerate(this.cm.ratio))
         )
 
         this.controller.setLeft(
@@ -65,32 +63,32 @@ export class Game {
             () => this.mainKart.goStraight()
         )
 
-        // const x = this.cm.width / 2
-        // const y = this.cm.height / 2
-        // const z = 0
-
-        // for(const path of this.course.paths) {
-        //     path.addPosition(x, y, z)
-        // }
         // this.mainKart.addPosition(x, y, z)
         // this.mainKart.shiftBaselineForward()
         this.camera.changeScale(7)
-        // this.camera.chaseMainKart(this.mainKart)
+        this.setCourse()
         this.loop(0)
+    }
+    setCourse() {
+        for(const path of this.course.paths) {
+            path.position.x = path.position.x * 7 * this.cm.ratio
+            path.position.y = path.position.y * 7 * this.cm.ratio
+        }
     }
 
     private loop = (timestamp) => {
 
         this.updateCurrentTime(timestamp)
         this.cm.resetCanvas()
-        // this.rotateObjects()
-        // this.moveObjects()
-        this.mainKart.moveOnIdle()
+        this.cm.fillBackground()
+        this.mainKart.moveOnIdle(this.camera)
         this.camera.chaseMainKart(this.mainKart)
         for(let path of this.course.paths) {
-            this.cm.fillPolygon(path, this.camera)
+            console.log(path)
+            path instanceof Curve ? this.cm.fillSector(path, this.camera) : this.cm.fillPolygon(path, this.camera)
         }
         this.cm.fillPolygon(this.mainKart, this.camera)
+
         // if(up_push && left_push) {
         //     this.cm.ctx.fillStyle = "red" ;
         // }
@@ -116,16 +114,6 @@ export class Game {
         //     })
 
         // }
-
-        // if (Math.random() < this.boxCreationProbability) {
-        //     this.createBox();
-        // }
-
-        // players.forEach(player => {
-        //     this.fillPlayer(player)
-        // });
-
-        // this.fillMaguma();
 
         requestAnimationFrame((timestamp) => {
             this.loop(timestamp)

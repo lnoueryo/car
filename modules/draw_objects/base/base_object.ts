@@ -110,10 +110,11 @@ export class BaseObject {
     createVerticesForDrawing(camera: Camera, cm): Point[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this._vertices.map(vertex => {
-            return vertex.adjustCanvasScale(cm).adjustScale(camera)
-            .rotatePoint(camera)
+            return vertex
+            .adjustCanvasScale(cm).adjustScale(camera)
             .addPoint(this.position.x, this.position.y, this.position.z)
             .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
+            .rotatePoint(camera)
             .addPoint(cm.width / 2, cm.height / 2, camera.position.z)
         })
     }
