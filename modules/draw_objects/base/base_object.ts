@@ -107,14 +107,15 @@ export class BaseObject {
         this._position.y += this.top.y;
     }
 
-    createVerticesForDrawing(camera: Camera, cm) {
-        const a = this._vertices.map(vertex => {
-            // return vertex.adjustScale(camera).rotatePoint(camera).adjustCanvasScale(cm)
-            return vertex.adjustCanvasScale(cm).adjustScale(camera).rotatePoint(camera)
-            .addPoint(this.position.x, this.position.y, this.position.z).addPoint(camera.position.x, camera.position.y, camera.position.z)
+    createVerticesForDrawing(camera: Camera, cm): Point[] {
+        // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
+        return this._vertices.map(vertex => {
+            return vertex.adjustCanvasScale(cm).adjustScale(camera)
+            .rotatePoint(camera)
+            .addPoint(this.position.x, this.position.y, this.position.z)
+            .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
+            .addPoint(cm.width / 2, cm.height / 2, camera.position.z)
         })
-        console.log(a)
-        return a
     }
 
     protected angleAtVertex(prev: Point, current: Point, next: Point) {

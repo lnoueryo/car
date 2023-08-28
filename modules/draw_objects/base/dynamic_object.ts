@@ -1,3 +1,4 @@
+import { CanvasManager } from "../../canvas_manager";
 import { Point } from "../point";
 import { BaseObject } from "./base_object";
 
@@ -58,19 +59,25 @@ export class DynamicObject extends BaseObject {
     }
 
     turnLeft() {
-        if(this._velocity < 1) return this._angle = 0
-        this._angle = 5 / this._velocity
+        // if(this._velocity < 1) return this._angle = 0
+        this._angle += 5
+        // this._angle = 5 / this._velocity
     }
 
     turnRight() {
-        if(this._velocity < 1) return this._angle = 0
-        this._angle = -5 / this._velocity
+        // if(this._velocity < 1) return this._angle = 0
+        this._angle -= 5
+        // this._angle = -5 / this._velocity
     }
 
-    adjustSpeed(ratio) {
-        this.maxVelocity *= ratio
-        this.accelerationTime *= ratio
-        this.decelerationRate *= ratio
-        this.brakeDecelerationRate *= ratio
+    moveOnIdle() {
+        // 角度をラジアンに変換する (もしangleがすでにラジアンであればこの行は不要です)
+        const radianAngle = this.angle * (Math.PI / 180);
+        // 角度と速度を使用してxとyの変位を計算
+        const deltaX = this._velocity * Math.cos(radianAngle);
+        const deltaY = this._velocity * Math.sin(radianAngle);
+
+        this.position.addPoint(deltaX, deltaY, 0)
     }
+
 }

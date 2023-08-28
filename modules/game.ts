@@ -38,11 +38,13 @@ export class Game {
 
         this.controller.setTop(
             this.mashButton(() => {
-                this.mainKart.accelerate()
-                this.mainKart.position.addPoint(this.mainKart.position.x, this.mainKart.velocity, this.mainKart.position.z)
+                this.mainKart.accelerate(this.cm)
+                this.mainKart.addPosition(0, -this.mainKart.velocity, 0)
+                this.camera.chaseMainKart(this.mainKart)
             }),
             this.endButton(() => this.mainKart.decelerate())
         )
+
         this.controller.setBottom(
             this.mashButton(() => this.mainKart.brake()),
             this.endButton(() => this.mainKart.decelerate())
@@ -52,21 +54,28 @@ export class Game {
             () => this.mainKart.turnLeft(),
             () => this.mainKart.goStraight()
         )
+
+        // this.controller.setLeft(
+        //     this.mashButton(() => this.mainKart.turnLeft()),
+        //     this.endButton(() => this.mainKart.goStraight())
+        // )
+
         this.controller.setRight(
             () => this.mainKart.turnRight(),
             () => this.mainKart.goStraight()
         )
 
-        const x = this.cm.width / 2
-        const y = this.cm.height / 2
-        const z = 0
+        // const x = this.cm.width / 2
+        // const y = this.cm.height / 2
+        // const z = 0
 
-        for(const path of this.course.paths) {
-            path.addPosition(x, y, z)
-        }
-        this.mainKart.addPosition(x, y, z)
-        this.mainKart.shiftBaselineForward()
+        // for(const path of this.course.paths) {
+        //     path.addPosition(x, y, z)
+        // }
+        // this.mainKart.addPosition(x, y, z)
+        // this.mainKart.shiftBaselineForward()
         this.camera.changeScale(7)
+        // this.camera.chaseMainKart(this.mainKart)
         this.loop(0)
     }
 
@@ -76,11 +85,12 @@ export class Game {
         this.cm.resetCanvas()
         // this.rotateObjects()
         // this.moveObjects()
+        this.mainKart.moveOnIdle()
+        this.camera.chaseMainKart(this.mainKart)
         for(let path of this.course.paths) {
             this.cm.fillPolygon(path, this.camera)
         }
         this.cm.fillPolygon(this.mainKart, this.camera)
-        return;
         // if(up_push && left_push) {
         //     this.cm.ctx.fillStyle = "red" ;
         // }

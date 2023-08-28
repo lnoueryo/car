@@ -88,11 +88,9 @@ export class CanvasManager {
         this.ctx.fillStyle = object.color;
         this.ctx.strokeStyle = 'blue';
         const [firstVertex, ...restVertices] = object.createVerticesForDrawing(camera, this)
-        console.log(restVertices, 'Hello')
         this.ctx.beginPath();
         this.ctx.moveTo(firstVertex.x, firstVertex.y);
         restVertices.forEach(vertex => {
-            console.log(vertex)
             this.ctx.lineTo(vertex.x, vertex.y);
         });
         this.ctx.closePath();
