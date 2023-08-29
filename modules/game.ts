@@ -3,7 +3,6 @@ import { Controller } from "./controller"
 import { Course } from "./course/course";
 import { Camera } from "./draw_objects/camera/camera";
 import { MainKart } from "./draw_objects/kart/main_kart"
-import { Curve, Rectangle, RoadFactory } from './draw_objects/path';
 
 export class Game {
     private course: Course
@@ -65,14 +64,14 @@ export class Game {
 
         // this.mainKart.addPosition(x, y, z)
         // this.mainKart.shiftBaselineForward()
-        this.camera.changeScale(7)
+        this.camera.changeScale(1)
         this.setCourse()
         this.loop(0)
     }
     setCourse() {
         for(const path of this.course.paths) {
-            path.position.x = path.position.x * 7 * this.cm.ratio
-            path.position.y = path.position.y * 7 * this.cm.ratio
+            path.position.x = path.position.x * this.camera.scale * this.cm.ratio
+            path.position.y = path.position.y * this.camera.scale * this.cm.ratio
         }
     }
 
@@ -84,7 +83,7 @@ export class Game {
         this.mainKart.moveOnIdle(this.camera)
         this.camera.chaseMainKart(this.mainKart)
         for(let path of this.course.paths) {
-            path instanceof Curve ? this.cm.fillSector(path, this.camera) : this.cm.fillPolygon(path, this.camera)
+            this.cm.fillPolygon(path, this.camera)
         }
         this.cm.fillPolygon(this.mainKart, this.camera)
 

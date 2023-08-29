@@ -1,11 +1,12 @@
-import { Point } from "../point";
+import { Point } from "../point/point";
 import { DynamicObject } from "../base/dynamic_object";
 import { MainKart } from "../kart/main_kart";
+import { Vertex } from "../point/vertex";
 
 export class Camera extends DynamicObject {
     protected _scale: number = 1
     constructor(
-        vertices: Point[],
+        vertices: Vertex[],
         position: Point,
         color: string,
         mass: number,

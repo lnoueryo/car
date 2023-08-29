@@ -1,12 +1,12 @@
 import { BaseObject } from "../base/base_object";
-import { Point } from "../point";
+import { Point } from "../point/point";
+import { Vertex } from "../point/vertex";
 
 export class Path extends BaseObject {
 
     constructor(
-        protected type: string,
         protected material: string,
-        vertices: Point[],
+        vertices: Vertex[],
         position: Point,
         color: string,
         mass: number,

@@ -1,6 +1,6 @@
-import { Curve, Rectangle } from "../draw_objects/path";
 import { Path } from "../draw_objects/path/path";
-import { Point } from "../draw_objects/point";
+import { Point } from "../draw_objects/point/point";
+import { Vertex } from "../draw_objects/point/vertex";
 
 export class Course {
     constructor(
@@ -18,10 +18,10 @@ export class Course {
 
     static convertJson(courseJson) {
         const paths = courseJson.paths.map(path => {
-            const {type, material, vertices, position, color} = path
-            const _vertices = vertices.map(vertex => Point.convertJson(vertex))
+            const {material, vertices, position, color} = path
+            const _vertices = vertices.map(vertex => Vertex.convertJson(vertex))
             const _position = Point.convertJson(position)
-            return type == 'curve' ? new Curve(type, material, _vertices, _position, color, 0, 0, 0) : new Rectangle(type, material, _vertices, _position, color, 0, 0, 0)
+            return new Path(material, _vertices, _position, color, 0, 0, 0)
         })
         return new Course(courseJson.name, courseJson.description, courseJson.difficulty, paths)
     }

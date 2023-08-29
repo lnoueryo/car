@@ -1,10 +1,11 @@
 import { Camera } from "../camera/camera";
-import { Point } from "../point"
+import { Point } from "../point/point"
+import { Vertex } from "../point/vertex";
 
 export class BaseObject {
 
     constructor(
-        protected _vertices: Point[],
+        protected _vertices: Vertex[],
         protected _position: Point,
         protected _color: string,
         protected mass: number,
@@ -107,7 +108,7 @@ export class BaseObject {
         this._position.y += this.top.y;
     }
 
-    createVerticesForDrawing(camera: Camera, cm): Point[] {
+    createVerticesForDrawing(camera: Camera, cm): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this._vertices.map(vertex => {
             return vertex

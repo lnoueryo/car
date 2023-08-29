@@ -1,10 +1,11 @@
 import { DynamicObject } from "../base/dynamic_object";
-import { Point } from "../point";
+import { Point } from "../point/point";
+import { Vertex } from "../point/vertex";
 
 export class Kart extends DynamicObject {
     private id
     constructor(
-        vertices: Point[],
+        vertices: Vertex[],
         position: Point,
         color: string,
         mass: number,

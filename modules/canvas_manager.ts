@@ -1,8 +1,6 @@
-import { Box } from './box'
 import { BaseObject } from './draw_objects/base/base_object';
 import { Camera } from './draw_objects/camera/camera';
-import { Kart } from './draw_objects/kart/kart';
-import { Curve } from './draw_objects/path';
+import { Path } from './draw_objects/path/path';
 let up_push = false;
 let down_push = false;
 let left_push = false;
@@ -81,26 +79,15 @@ export class CanvasManager {
         const vertices = object.createVerticesForDrawing(camera, this)
         this.ctx.beginPath();
         this.ctx.moveTo(vertices[0].x, vertices[0].y);
+        let a = false
         vertices.forEach((vertex, i) => {
-            if(i == 1) {
-                this.ctx.arcTo(vertex.x, vertex.y, vertices[i + 1].x, vertices[i + 1].y, vertex.getDistance(vertices[i + 1]));
-            }
-            else {
+            if(vertex.type == 'arc') {
+                const nextIndex = vertices.length - 1 == i ? 0 : i + 1;
+                this.ctx.arcTo(vertex.x, vertex.y, vertices[nextIndex].x, vertices[nextIndex].y, vertex.getDistance(vertices[nextIndex]));
+            } else if(vertex.type == 'line') {
                 this.ctx.lineTo(vertex.x, vertex.y);
             }
         });
-        this.ctx.closePath();
-        this.ctx.fill();
-    }
-
-    fillSector(object: Curve, camera: Camera) {
-        console.log(object)
-        this.ctx.fillStyle = object.color;
-        const [position] = object.createVerticesForDrawing(camera, this)
-        this.ctx.beginPath();
-        this.ctx.moveTo(position.x, position.y);
-        console.log(object.startAngle, object.endAngle)
-        this.ctx.arc(position.x, position.y, position.x, object.startAngle, 5, false);
         this.ctx.closePath();
         this.ctx.fill();
     }

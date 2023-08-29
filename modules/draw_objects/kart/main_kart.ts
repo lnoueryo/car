@@ -1,9 +1,10 @@
 import { Kart } from "./kart";
-import { Point } from "../point";
+import { Point } from "../point/point";
+import { Vertex } from "../point/vertex";
 
 export class MainKart extends Kart {
     constructor(
-        vertices: Point[],
+        vertices: Vertex[],
         position: Point,
         color: string,
         mass: number,

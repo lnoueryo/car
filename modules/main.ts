@@ -2,13 +2,14 @@ import { CanvasManager } from './canvas_manager'
 import { Game } from './game'
 import { Controller } from './controller'
 import { MainKart } from './draw_objects/kart/main_kart'
-import { Point } from './draw_objects/point'
+import { Point } from './draw_objects/point/point'
 import course from '../courses/basic.json'
 import { Course } from './course/course'
 import { Camera } from './draw_objects/camera/camera'
+import { Vertex } from './draw_objects/point/vertex'
 
 const createMainPlayer = () => {
-    const vertices = [new Point(-5, 0, 0), new Point(5, 0, 0), new Point(5, 10, 0), new Point(-5, 10, 0)]
+    const vertices = [new Vertex(-5, 0, 0, 'line'), new Vertex(5, 0, 0, 'line'), new Vertex(5, 10, 0, 'line'), new Vertex(-5, 10, 0, 'line')]
     const position = new Point(0, 0, 0)
     const color = 'blue'
     const mass = 300
@@ -27,7 +28,7 @@ const createMainPlayer = () => {
 }
 
 const createCamera = () => {
-    const vertices = [new Point(-5, 0, 0), new Point(5, 0, 0), new Point(5, 10, 0), new Point(-5, 10, 0)]
+    const vertices = [new Vertex(-5, 0, 0, 'line'), new Vertex(5, 0, 0, 'line'), new Vertex(5, 10, 0, 'line'), new Vertex(-5, 10, 0, 'line')]
     const position = new Point(0, 0, 0)
     const color = 'black'
     const mass = 0
