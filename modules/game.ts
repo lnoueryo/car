@@ -84,7 +84,6 @@ export class Game {
         this.mainKart.moveOnIdle(this.camera)
         this.camera.chaseMainKart(this.mainKart)
         for(let path of this.course.paths) {
-            console.log(path)
             path instanceof Curve ? this.cm.fillSector(path, this.camera) : this.cm.fillPolygon(path, this.camera)
         }
         this.cm.fillPolygon(this.mainKart, this.camera)

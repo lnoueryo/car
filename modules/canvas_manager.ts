@@ -78,11 +78,16 @@ export class CanvasManager {
 
     fillPolygon(object: BaseObject, camera: Camera) {
         this.ctx.fillStyle = object.color;
-        const [firstVertex, ...restVertices] = object.createVerticesForDrawing(camera, this)
+        const vertices = object.createVerticesForDrawing(camera, this)
         this.ctx.beginPath();
-        this.ctx.moveTo(firstVertex.x, firstVertex.y);
-        restVertices.forEach(vertex => {
-            this.ctx.lineTo(vertex.x, vertex.y);
+        this.ctx.moveTo(vertices[0].x, vertices[0].y);
+        vertices.forEach((vertex, i) => {
+            if(i == 1) {
+                this.ctx.arcTo(vertex.x, vertex.y, vertices[i + 1].x, vertices[i + 1].y, vertex.getDistance(vertices[i + 1]));
+            }
+            else {
+                this.ctx.lineTo(vertex.x, vertex.y);
+            }
         });
         this.ctx.closePath();
         this.ctx.fill();
@@ -91,9 +96,11 @@ export class CanvasManager {
     fillSector(object: Curve, camera: Camera) {
         console.log(object)
         this.ctx.fillStyle = object.color;
+        const [position] = object.createVerticesForDrawing(camera, this)
         this.ctx.beginPath();
-        this.ctx.moveTo(object.left.x, object.left.y);
-        this.ctx.arc(object.left.x, object.left.y, object.left.getDistance(object.right), object.startAngle, object.endAngle, false);
+        this.ctx.moveTo(position.x, position.y);
+        console.log(object.startAngle, object.endAngle)
+        this.ctx.arc(position.x, position.y, position.x, object.startAngle, 5, false);
         this.ctx.closePath();
         this.ctx.fill();
     }

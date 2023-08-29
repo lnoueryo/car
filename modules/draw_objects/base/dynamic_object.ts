@@ -93,6 +93,7 @@ export class DynamicObject extends BaseObject {
             .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
             .addPoint(cm.width / 2, cm.height / 2, camera.position.z)
         })
+
     }
 
 }
