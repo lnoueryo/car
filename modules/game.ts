@@ -11,15 +11,20 @@ export class Game {
     private currentTime = 0
     private lastTimestamp = 0
     private keysPressed = {};
+    private timers = {}
     constructor(private cm: CanvasManager, private controller: Controller, private mainKart: MainKart, private camera: Camera) {}
 
     mashButton = (func) => {
         return (e)=> {
             if (!this.keysPressed[e.key]) {
                 this.keysPressed[e.key] = true;
-                let timer = setInterval(() => {
-                    func()
-                    this.keysPressed[e.key] || clearInterval(timer);
+                this.timers[e.key] = setInterval(() => {
+                    if (!this.keysPressed[e.key]) {
+                        clearInterval(this.timers[e.key]);
+                        delete this.timers[e.key];
+                    } else {
+                        func();
+                    }
                 })
             }
         }
@@ -27,8 +32,10 @@ export class Game {
 
     endButton = (func) => {
         return  (e) => {
+            clearInterval(this.timers[e.key]); // タイマーをクリアします
+            delete this.timers[e.key]; // タイマーの参照を削除します
             this.keysPressed[e.key] = false;
-            func()
+            func();
         }
     }
 
@@ -37,9 +44,9 @@ export class Game {
 
         this.controller.setTop(
             this.mashButton(() => {
-                this.mainKart.accelerate(this.cm.ratio)
+                this.mainKart.accelerate(this.cm.ratio * this.camera.scale)
             }),
-            this.endButton(() => this.mainKart.decelerate(this.cm.ratio))
+            this.endButton(() => this.mainKart.decelerate(this.cm.ratio * this.camera.scale))
         )
 
         this.controller.setBottom(
@@ -64,10 +71,11 @@ export class Game {
 
         // this.mainKart.addPosition(x, y, z)
         // this.mainKart.shiftBaselineForward()
-        this.camera.changeScale(1)
+        this.camera.changeScale(7)
         this.setCourse()
         this.loop(0)
     }
+
     setCourse() {
         for(const path of this.course.paths) {
             path.position.x = path.position.x * this.camera.scale * this.cm.ratio

@@ -79,7 +79,6 @@ export class CanvasManager {
         const vertices = object.createVerticesForDrawing(camera, this)
         this.ctx.beginPath();
         this.ctx.moveTo(vertices[0].x, vertices[0].y);
-        let a = false
         vertices.forEach((vertex, i) => {
             if(vertex.type == 'arc') {
                 const nextIndex = vertices.length - 1 == i ? 0 : i + 1;

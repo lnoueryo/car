@@ -9,7 +9,7 @@ import { Camera } from './draw_objects/camera/camera'
 import { Vertex } from './draw_objects/point/vertex'
 
 const createMainPlayer = () => {
-    const vertices = [new Vertex(-5, 0, 0, 'line'), new Vertex(5, 0, 0, 'line'), new Vertex(5, 10, 0, 'line'), new Vertex(-5, 10, 0, 'line')]
+    const vertices = [new Vertex(-5, 0, 5, 'line'), new Vertex(5, 0, 5, 'line'), new Vertex(5, 10, 5, 'line'), new Vertex(-5, 10, 5, 'line')]
     const position = new Point(0, 0, 0)
     const color = 'blue'
     const mass = 300
@@ -20,10 +20,10 @@ const createMainPlayer = () => {
         mass,
         0,
         0,
-        200,
-        20,
-        0.05,
-        0.1
+        5,
+        10,
+        0.0025,
+        0.01
     )
 }
 
@@ -41,7 +41,7 @@ const createCamera = () => {
         0,
         200,
         20,
-        0.05,
+        0.005,
         0.1
     )
 }

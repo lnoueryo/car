@@ -86,7 +86,7 @@ export class BaseObject {
     }
 
     arePointsInsidePolygon(object: BaseObject) {
-        return object._vertices.every((point: Point) => {
+        return object._vertices.every((point: Vertex) => {
             return this.isPointInPolygon(point)
         })
     }
@@ -120,7 +120,7 @@ export class BaseObject {
         })
     }
 
-    protected angleAtVertex(prev: Point, current: Point, next: Point) {
+    protected angleAtVertex(prev: Vertex, current: Vertex, next: Vertex) {
         const a = prev.getDistance(current);
         const b = current.getDistance(next);
         const c = next.getDistance(prev);

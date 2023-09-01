@@ -7,6 +7,7 @@ import { BaseObject } from "./base_object";
 export class DynamicObject extends BaseObject {
     protected _velocity: number = 0;
     protected startTime: number | null = null;
+    protected isDecelerating: boolean = false;
     protected _angle = 0
     constructor(
         vertices: Vertex[],
@@ -31,12 +32,17 @@ export class DynamicObject extends BaseObject {
         return this._velocity
     }
 
+
     accelerate(ratio) {
-        if (this.startTime === null) {
-            this.startTime = Date.now();
-        }
+        if (this.startTime === null) this.startTime = Date.now();
         const elapsedTime = (Date.now() - this.startTime) / 1000;
         const accelerationRatio = Math.min(elapsedTime / this.accelerationTime, 1);
+        if(this.isDecelerating) {
+            const time = this._velocity / (ratio * this.maxVelocity / this.accelerationTime)
+            this.startTime = (Date.now() - time * 1000)
+            this.isDecelerating = false
+        }
+        // const accelerationRatio = Math.min(2 / Math.PI * Math.atan(elapsedTime), 1);
         const maxVelocity = ratio * this.maxVelocity;
         this._velocity = maxVelocity * accelerationRatio;
         if(this._velocity > maxVelocity) {
@@ -44,12 +50,14 @@ export class DynamicObject extends BaseObject {
         }
     }
 
+
     decelerate(ratio) {
+        this.isDecelerating = true;
         let timer = setInterval(() => {
-            this.startTime = Date.now();
             this._velocity -= this.decelerationRate * ratio;
-            if (this._velocity < 1) {
+            if (this._velocity <= 0) {
                 this._velocity = 0;
+                this.isDecelerating = false;
                 this.startTime = null;
                 clearInterval(timer)
             }
@@ -67,12 +75,12 @@ export class DynamicObject extends BaseObject {
 
     turnLeft() {
         // if(this._velocity < 1) return this._angle = 0
-        this._angle = 3
+        this._angle = 2
     }
 
     turnRight() {
         // if(this._velocity < 1) return this._angle = 0
-        this._angle = -3
+        this._angle = -2
     }
 
     moveOnIdle(camera: Camera) {
