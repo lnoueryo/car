@@ -7,6 +7,7 @@ export class Course {
         private courseName: string,
         private description: string,
         private difficulty: string,
+        private _frame: Path,
         private _paths: Path[],
         // private items: Item[],
         // private obstacles: Obstacle[],
@@ -17,16 +18,24 @@ export class Course {
     }
 
     static convertJson(courseJson) {
+        const _position = Point.convertJson(courseJson.frame.position)
+        const _vertices = courseJson.frame.vertices.map(vertex => Vertex.convertJson(vertex))
+        const frame = new Path(courseJson.frame.material, _vertices, _position, courseJson.frame.color, 0, 0, 0)
         const paths = courseJson.paths.map(path => {
             const {material, vertices, position, color} = path
-            const _vertices = vertices.map(vertex => Vertex.convertJson(vertex))
-            const _position = Point.convertJson(position)
-            return new Path(material, _vertices, _position, color, 0, 0, 0)
+            const _pathVertices = vertices.map(vertex => Vertex.convertJson(vertex))
+            const _pathPosition = Point.convertJson(position)
+            return new Path(material, _pathVertices, _pathPosition, color, 0, 0, 0)
         })
-        return new Course(courseJson.name, courseJson.description, courseJson.difficulty, paths)
+        return new Course(courseJson.name, courseJson.description, courseJson.difficulty, frame, paths)
     }
 
     get paths() {
         return this._paths
     }
+
+    get frame() {
+        return this._frame
+    }
+
 }

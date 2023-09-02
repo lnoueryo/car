@@ -90,6 +90,7 @@ export class Game {
         this.cm.fillBackground()
         this.mainKart.moveOnIdle(this.camera)
         this.camera.chaseMainKart(this.mainKart)
+        this.cm.fillPolygon(this.course.frame, this.camera)
         for(let path of this.course.paths) {
             this.cm.fillPolygon(path, this.camera)
         }

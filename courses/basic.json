@@ -2,6 +2,37 @@
     "name": "basic stage",
     "description": "basic stage",
     "difficulty": "easy",
+    "frame": {
+        "material": "grass",
+        "color": "#80FF80",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "vertices": [
+            {
+                "x": -300,
+                "y": -500,
+                "z": 0,
+                "type": "line"
+            },
+            {
+                "x": 100,
+                "y": -500,
+                "z": 0,
+                "type": "line"
+            },
+            {
+                "x": 100,
+                "y": 300,
+                "z": 0,
+                "type": "line"
+            },
+            {
+                "x": -300,
+                "y": 300,
+                "z": 0,
+                "type": "line"
+            }
+        ]
+    },
     "paths": [
         {
             "id": 1,
