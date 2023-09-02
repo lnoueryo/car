@@ -30,4 +30,17 @@ export class Point {
         return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     }
 
+    adjustScale(camera: Camera) {
+        const x = this.x * camera.scale;
+        const y = this.y * camera.scale;
+        const z = this.z * camera.scale;
+        return new Point(x, y, z)
+    }
+
+    adjustCanvasScale(cm: CanvasManager) {
+        const x = this.x * cm.ratio;
+        const y = this.y * cm.ratio;
+        const z = this.z * cm.ratio;
+        return new Point(x, y, z)
+    }
 }

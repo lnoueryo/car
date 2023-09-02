@@ -72,15 +72,7 @@ export class Game {
         // this.mainKart.addPosition(x, y, z)
         // this.mainKart.shiftBaselineForward()
         this.camera.changeScale(7)
-        this.setCourse()
         this.loop(0)
-    }
-
-    setCourse() {
-        for(const path of this.course.paths) {
-            path.position.x = path.position.x * this.camera.scale * this.cm.ratio
-            path.position.y = path.position.y * this.camera.scale * this.cm.ratio
-        }
     }
 
     private loop = (timestamp) => {
@@ -89,6 +81,9 @@ export class Game {
         this.cm.resetCanvas()
         this.cm.fillBackground()
         this.mainKart.moveOnIdle(this.camera)
+        if(!this.course.frame.isInsideObject(this.mainKart, this.camera, this.cm)) {
+            console.log('out')
+        }
         this.camera.chaseMainKart(this.mainKart)
         this.cm.fillPolygon(this.course.frame, this.camera)
         for(let path of this.course.paths) {

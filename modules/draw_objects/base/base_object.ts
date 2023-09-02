@@ -1,3 +1,4 @@
+import { CanvasManager } from "../../canvas_manager";
 import { Camera } from "../camera/camera";
 import { Point } from "../point/point"
 import { Vertex } from "../point/vertex";
@@ -74,21 +75,23 @@ export class BaseObject {
         return intersections % 2 !== 0;
     }
 
-    isInsideObject(object: BaseObject) {
-
-        return this.areRectanglesOverlapping(object) && this.arePointsInsidePolygon(object);
+    isInsideObject(object: BaseObject, camera: Camera, cm: CanvasManager) {
+        return object.vertices.every(vertex => this.isPointInsidePolygon(vertex.addPoint(object.position.x, object.position.y, object.position.z), camera, cm))
     }
 
-    areRectanglesOverlapping(object: BaseObject) {
+    isPointInsidePolygon(point: Point, camera: Camera, cm: CanvasManager) {
+        point.x /= camera.scale * cm.ratio
+        point.y /= camera.scale * cm.ratio
+        let inside = false;
+        for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
+            let xi = this.vertices[i].x, yi = this.vertices[i].y;
+            let xj = this.vertices[j].x, yj = this.vertices[j].y;
 
-        return (this.left.x <= object.right.x && this.right.x >= object.left.x &&
-                this.top.y <= object.bottom.y && this.bottom.y >= object.top.y)
-    }
-
-    arePointsInsidePolygon(object: BaseObject) {
-        return object._vertices.every((point: Vertex) => {
-            return this.isPointInPolygon(point)
-        })
+            let intersect = ((yi > point.y) !== (yj > point.y))
+                && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
     }
 
     findMidpoint() {
@@ -108,12 +111,13 @@ export class BaseObject {
         this._position.y += this.top.y;
     }
 
-    createVerticesForDrawing(camera: Camera, cm): Vertex[] {
+    createVerticesForDrawing(camera: Camera, cm: CanvasManager): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
+        const { x, y, z } = this.position.adjustCanvasScale(cm).adjustScale(camera)
         return this._vertices.map(vertex => {
             return vertex
             .adjustCanvasScale(cm).adjustScale(camera)
-            .addPoint(this.position.x, this.position.y, this.position.z)
+            .addPoint(x, y, z)
             .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
             .rotatePoint(camera)
             .addPoint(cm.width / 2, cm.height / 2, camera.position.z)
