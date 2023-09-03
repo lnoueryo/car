@@ -88,7 +88,7 @@ export class BaseObject {
             let xj = this.vertices[j].x, yj = this.vertices[j].y;
 
             let intersect = ((yi > point.y) !== (yj > point.y))
-                && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
+                && (point.x <= (xj - xi) * (point.y - yi) / (yj - yi) + xi);
             if (intersect) inside = !inside;
         }
         return inside;

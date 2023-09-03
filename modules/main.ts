@@ -28,7 +28,7 @@ const createMainPlayer = () => {
 }
 
 const createCamera = () => {
-    const vertices = [new Vertex(-5, 0, 0, 'line'), new Vertex(5, 0, 0, 'line'), new Vertex(5, 10, 0, 'line'), new Vertex(-5, 10, 0, 'line')]
+    const vertices = [new Vertex(-5, 0, 5, 'line'), new Vertex(5, 0, 5, 'line'), new Vertex(5, 10, 5, 'line'), new Vertex(-5, 10, 5, 'line')]
     const position = new Point(0, 0, 0)
     const color = 'black'
     const mass = 0
