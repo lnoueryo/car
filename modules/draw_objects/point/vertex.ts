@@ -26,7 +26,7 @@ export class Vertex extends Point {
         return new Vertex(this.x + x, this.y + y, this.z + z, this.type)
     }
 
-    adjustScale(camera: Camera) {
+    adjustCameraScale(camera: Camera) {
         const x = this.x * camera.scale;
         const y = this.y * camera.scale;
         const z = this.z * camera.scale;

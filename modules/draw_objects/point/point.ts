@@ -26,7 +26,7 @@ export class Point {
         return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     }
 
-    adjustScale(camera: Camera) {
+    adjustCameraScale(camera: Camera) {
         const x = this.x * camera.scale;
         const y = this.y * camera.scale;
         const z = this.z * camera.scale;

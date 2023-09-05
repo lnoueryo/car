@@ -55,24 +55,6 @@ export class BaseObject {
         return this._color
     }
 
-    isPointInPolygon(point) {
-        let intersections = 0;
-        let prevVertex = this._vertices[this._vertices.length - 1];
-
-        for (let vertex of this._vertices) {
-            if (Math.min(vertex.y, prevVertex.y) <= point.y && Math.max(vertex.y, prevVertex.y) > point.y) {
-                let intersectionX = vertex.x + (point.y - vertex.y) / (prevVertex.y - vertex.y) * (prevVertex.x - vertex.x);
-                if (intersectionX < point.x) {
-                    intersections++;
-                }
-            }
-            prevVertex = vertex;
-        }
-
-        return intersections % 2 !== 0;
-    }
-
-
     isPointInsidePolygon(point: Vertex) {
         let inside = false;
         for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
@@ -121,7 +103,7 @@ export class BaseObject {
         const angle = Math.acos((a * a + b * b - c * c) / (2 * a * b));
         return angle * (180 / Math.PI);
     }
-
+    //使用してない？
     anglesForPolygon() {
         const angles = [];
 

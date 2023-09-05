@@ -68,15 +68,15 @@ export class Game {
     }
 
     private setCourse() {
-        this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
-        this.course.frame._position = this.course.frame.position.adjustCanvasScale(this.cm).adjustScale(this.camera)
+        this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
+        this.course.frame._position = this.course.frame.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
         this.course._paths = this.course.paths.map(path => {
-            path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
-            path._position = path.position.adjustCanvasScale(this.cm).adjustScale(this.camera)
+            path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
+            path._position = path.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
             return path
         })
-        this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
-        this.mainKart._position = this.mainKart.position.adjustCanvasScale(this.cm).adjustScale(this.camera)
+        this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
+        this.mainKart._position = this.mainKart.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
         this.camera.chaseMainKart(this.mainKart)
     }
 
