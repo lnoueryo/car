@@ -14,10 +14,6 @@ export class Point {
         return new Point(x, y, z)
     }
 
-    addPoint(x: number, y: number, z: number) {
-        return new Point(this.x + x, this.y + y, this.z + z)
-    }
-
     getBase(point) {
         //底辺
         return point.x - this.x;

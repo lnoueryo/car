@@ -2,12 +2,13 @@ import { CanvasManager } from "../../canvas_manager";
 import { Camera } from "../camera/camera";
 import { Point } from "../point/point"
 import { Vertex } from "../point/vertex";
+import { DynamicObject } from "./dynamic_object";
 
 export class BaseObject {
 
     constructor(
-        protected _vertices: Vertex[],
-        protected _position: Point,
+        public _vertices: Vertex[],
+        public _position: Point,
         protected _color: string,
         protected mass: number,
         protected friction: number, //物体が他の物体と接触する際の摩擦の強さ
@@ -54,10 +55,6 @@ export class BaseObject {
         return this._color
     }
 
-    addPosition(x, y, z) {
-        this._position = this._position.addPoint(x, y, z)
-    }
-
     isPointInPolygon(point) {
         let intersections = 0;
         let prevVertex = this._vertices[this._vertices.length - 1];
@@ -75,19 +72,14 @@ export class BaseObject {
         return intersections % 2 !== 0;
     }
 
-    isInsideObject(object: BaseObject, camera: Camera, cm: CanvasManager) {
-        return object.vertices.every(vertex => this.isPointInsidePolygon(vertex.addPoint(object.position.x, object.position.y, object.position.z), camera, cm))
-    }
 
-    isPointInsidePolygon(point: Point, camera: Camera, cm: CanvasManager) {
-        point.x /= camera.scale * cm.ratio
-        point.y /= camera.scale * cm.ratio
+    isPointInsidePolygon(point: Vertex) {
         let inside = false;
         for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
             let xi = this.vertices[i].x, yi = this.vertices[i].y;
             let xj = this.vertices[j].x, yj = this.vertices[j].y;
 
-            let intersect = ((yi > point.y) !== (yj > point.y))
+            let intersect = ((yi >= point.y) !== (yj >= point.y))
                 && (point.x <= (xj - xi) * (point.y - yi) / (yj - yi) + xi);
             if (intersect) inside = !inside;
         }
@@ -111,16 +103,13 @@ export class BaseObject {
         this._position.y += this.top.y;
     }
 
-    createVerticesForDrawing(camera: Camera, cm: CanvasManager): Vertex[] {
+    createVerticesForDrawing(camera: Camera): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
-        const { x, y, z } = this.position.adjustCanvasScale(cm).adjustScale(camera)
         return this._vertices.map(vertex => {
             return vertex
-            .adjustCanvasScale(cm).adjustScale(camera)
-            .addPoint(x, y, z)
+            .addPoint(this.position.x, this.position.y, this.position.z)
             .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
             .rotatePoint(camera)
-            .addPoint(cm.width / 2, cm.height / 2, camera.position.z)
         })
     }
 

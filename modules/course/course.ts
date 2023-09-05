@@ -1,3 +1,5 @@
+import { Camera } from "../draw_objects/camera/camera";
+import { MainKart } from "../draw_objects/kart/main_kart";
 import { Path } from "../draw_objects/path/path";
 import { Point } from "../draw_objects/point/point";
 import { Vertex } from "../draw_objects/point/vertex";
@@ -8,7 +10,7 @@ export class Course {
         private description: string,
         private difficulty: string,
         private _frame: Path,
-        private _paths: Path[],
+        public _paths: Path[],
         // private items: Item[],
         // private obstacles: Obstacle[],
         // private background: BackgroundElement[],
@@ -36,6 +38,13 @@ export class Course {
 
     get frame() {
         return this._frame
+    }
+
+    isInsideObject(kart: MainKart, camera: Camera) {
+        const {x, y, z} = kart._position
+        const vertices = kart.vertices.map(vertex => vertex.addPoint(x,y,z))
+        const newCamera = camera.createCourseCamera(vertices)
+        return vertices.every(vertex => this.frame.isPointInsidePolygon(vertex.rotatePoint(newCamera)));
     }
 
 }

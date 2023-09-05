@@ -76,7 +76,7 @@ export class CanvasManager {
 
     fillPolygon(object: BaseObject, camera: Camera) {
         this.ctx.fillStyle = object.color;
-        const vertices = object.createVerticesForDrawing(camera, this)
+        const vertices = object.createVerticesForDrawing(camera)
         this.ctx.beginPath();
         this.ctx.moveTo(vertices[0].x, vertices[0].y);
         vertices.forEach((vertex, i) => {

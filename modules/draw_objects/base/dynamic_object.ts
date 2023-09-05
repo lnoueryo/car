@@ -90,19 +90,17 @@ export class DynamicObject extends BaseObject {
         // 角度と速度を使用してxとyの変位を計算
         const deltaX = this._velocity * Math.cos(radianAngle);
         const deltaY = -this._velocity * Math.sin(radianAngle);
-        this.addPosition(deltaX, deltaY, 0)
+        this._position.x += deltaX
+        this._position.y += deltaY
     }
 
-    createVerticesForDrawing(camera: Camera, cm): Vertex[] {
+    createVerticesForDrawing(camera: Camera): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this._vertices.map(vertex => {
             return vertex
-            .adjustCanvasScale(cm).adjustScale(camera)
             .addPoint(this.position.x, this.position.y, this.position.z)
-            .addPoint(cm.width / 2, cm.height / 2, camera.position.z)
             .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
         })
-
     }
 
 }

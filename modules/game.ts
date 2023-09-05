@@ -43,9 +43,7 @@ export class Game {
         if(!this.course) throw('No Course')
 
         this.controller.setTop(
-            this.mashButton(() => {
-                this.mainKart.accelerate(this.cm.ratio * this.camera.scale)
-            }),
+            this.mashButton(() => this.mainKart.accelerate(this.cm.ratio * this.camera.scale)),
             this.endButton(() => this.mainKart.decelerate(this.cm.ratio * this.camera.scale))
         )
 
@@ -59,20 +57,27 @@ export class Game {
             () => this.mainKart.goStraight()
         )
 
-        // this.controller.setLeft(
-        //     this.mashButton(() => this.mainKart.turnLeft()),
-        //     this.endButton(() => this.mainKart.goStraight())
-        // )
-
         this.controller.setRight(
             () => this.mainKart.turnRight(),
             () => this.mainKart.goStraight()
         )
 
-        // this.mainKart.addPosition(x, y, z)
-        // this.mainKart.shiftBaselineForward()
         this.camera.changeScale(7)
+        this.setCourse()
         this.loop(0)
+    }
+
+    private setCourse() {
+        this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
+        this.course.frame._position = this.course.frame.position.adjustCanvasScale(this.cm).adjustScale(this.camera)
+        this.course._paths = this.course.paths.map(path => {
+            path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
+            path._position = path.position.adjustCanvasScale(this.cm).adjustScale(this.camera)
+            return path
+        })
+        this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
+        this.mainKart._position = this.mainKart.position.adjustCanvasScale(this.cm).adjustScale(this.camera)
+        this.camera.chaseMainKart(this.mainKart)
     }
 
     private loop = (timestamp) => {
@@ -81,16 +86,15 @@ export class Game {
         this.cm.resetCanvas()
         this.cm.fillBackground()
         this.mainKart.moveOnIdle(this.camera)
-        if(!this.course.frame.isInsideObject(this.mainKart, this.camera, this.cm)) {
-            console.log('out')
-        }
         this.camera.chaseMainKart(this.mainKart)
+        if(!this.course.isInsideObject(this.mainKart, this.camera)) {
+            console.log(this.mainKart, this.camera)
+        }
         this.cm.fillPolygon(this.course.frame, this.camera)
         for(let path of this.course.paths) {
             this.cm.fillPolygon(path, this.camera)
         }
         this.cm.fillPolygon(this.mainKart, this.camera)
-
         // if(up_push && left_push) {
         //     this.cm.ctx.fillStyle = "red" ;
         // }
