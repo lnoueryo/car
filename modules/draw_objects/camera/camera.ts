@@ -27,7 +27,7 @@ export class Camera extends DynamicObject {
     chaseMainKart(mainKart: MainKart) {
         this._position = mainKart.position
         this._vertices = mainKart.vertices
-        this._angle += mainKart.angle
+        this._angle = mainKart.direction
     }
 
     changeScale(scale: number) {

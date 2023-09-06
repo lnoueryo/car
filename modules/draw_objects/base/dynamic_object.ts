@@ -6,9 +6,9 @@ import { BaseObject } from "./base_object";
 
 export class DynamicObject extends BaseObject {
     protected _velocity: number = 0;
+    protected _direction: number = 0;
     protected startTime: number | null = null;
     protected isDecelerating: boolean = false;
-    protected _angle = 0
     constructor(
         vertices: Vertex[],
         position: Point,
@@ -24,12 +24,12 @@ export class DynamicObject extends BaseObject {
         super(vertices, position, color, mass, friction, restitution)
     }
 
-    get angle() {
-        return this._angle
-    }
-
     get velocity() {
         return this._velocity
+    }
+
+    get direction() {
+        return this._direction
     }
 
 
@@ -75,20 +75,21 @@ export class DynamicObject extends BaseObject {
 
     turnLeft() {
         // if(this._velocity < 1) return this._angle = 0
-        this._angle = 2
+        this._angle = -2
     }
 
     turnRight() {
         // if(this._velocity < 1) return this._angle = 0
-        this._angle = -2
+        this._angle = 2
     }
 
-    moveOnIdle(camera: Camera) {
+    moveOnIdle() {
+        this._direction += this.angle
         // 角度をラジアンに変換する (もしangleがすでにラジアンであればこの行は不要です)
-        const radianAngle = (camera.angle - 270) * (Math.PI / 180);
+        const radianAngle = (this.direction + 90) * (Math.PI / 180);
 
         // 角度と速度を使用してxとyの変位を計算
-        const deltaX = this._velocity * Math.cos(radianAngle);
+        const deltaX = -this._velocity * Math.cos(radianAngle);
         const deltaY = -this._velocity * Math.sin(radianAngle);
         this._position.x += deltaX
         this._position.y += deltaY
@@ -98,8 +99,8 @@ export class DynamicObject extends BaseObject {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this._vertices.map(vertex => {
             return vertex
-            .addPoint(this.position.x, this.position.y, this.position.z)
-            .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
+            .addPoint(this.position.x - camera.position.x, this.position.y - camera.position.y , this.position.z - camera.position.z)
+            .rotatePoint(camera.findMidpoint(), this.direction - camera.angle)
         })
     }
 

@@ -40,11 +40,10 @@ export class Vertex extends Point {
         return new Vertex(x, y, z, this.type)
     }
 
-    rotatePoint(camera: Camera) {
-        const rad = (Math.PI / 180) * camera.angle;
+    rotatePoint(midpoint: Point, angle: number) {
+        const rad = (Math.PI / 180) * angle;
         const cosAngle = Math.cos(rad);
-        const sinAngle = Math.sin(rad);
-        const midpoint = camera.findMidpoint()
+        const sinAngle = Math.sin(rad)
         const x = cosAngle * (this.x - midpoint.x) - sinAngle * (this.y - midpoint.y) + midpoint.x;
         const y = sinAngle * (this.x - midpoint.x) + cosAngle * (this.y - midpoint.y) + midpoint.y;
         const z = 0;

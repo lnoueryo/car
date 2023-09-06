@@ -40,11 +40,11 @@ export class Course {
         return this._frame
     }
 
-    isInsideObject(kart: MainKart, camera: Camera) {
-        const {x, y, z} = kart._position
-        const vertices = kart.vertices.map(vertex => vertex.addPoint(x,y,z))
+    isInsideObject(camera: Camera) {
+        const {x, y, z} = camera._position
+        const vertices = camera.vertices.map(vertex => vertex.addPoint(x,y,z))
         const newCamera = camera.createCourseCamera(vertices)
-        return vertices.every(vertex => this.frame.isPointInsidePolygon(vertex.rotatePoint(newCamera)));
+        return vertices.every(vertex => this.frame.isPointInsidePolygon(vertex.rotatePoint(newCamera.findMidpoint(), newCamera.angle)));
     }
 
 }

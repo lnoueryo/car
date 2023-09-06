@@ -1,6 +1,7 @@
 import { Kart } from "./kart";
 import { Point } from "../point/point";
 import { Vertex } from "../point/vertex";
+import { Camera } from "../camera/camera";
 
 export class MainKart extends Kart {
     constructor(

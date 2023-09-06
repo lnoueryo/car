@@ -5,7 +5,7 @@ import { Vertex } from "../point/vertex";
 import { DynamicObject } from "./dynamic_object";
 
 export class BaseObject {
-
+    protected _angle = 0
     constructor(
         public _vertices: Vertex[],
         public _position: Point,
@@ -55,6 +55,10 @@ export class BaseObject {
         return this._color
     }
 
+    get angle() {
+        return this._angle
+    }
+
     isPointInsidePolygon(point: Vertex) {
         let inside = false;
         for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
@@ -89,9 +93,8 @@ export class BaseObject {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this._vertices.map(vertex => {
             return vertex
-            .addPoint(this.position.x, this.position.y, this.position.z)
-            .addPoint(-camera.position.x, -camera.position.y, -camera.position.z)
-            .rotatePoint(camera)
+            .addPoint(this.position.x - camera.position.x, this.position.y - camera.position.y, this.position.z - camera.position.z)
+            .rotatePoint(camera.findMidpoint(), 0 - camera.angle)
         })
     }
 
