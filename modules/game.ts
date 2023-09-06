@@ -15,18 +15,15 @@ export class Game {
     constructor(private cm: CanvasManager, private controller: Controller, private mainKart: MainKart, private camera: Camera) {}
 
     mashButton = (func) => {
-        return (e)=> {
-            if (!this.keysPressed[e.key]) {
-                this.keysPressed[e.key] = true;
-                this.timers[e.key] = setInterval(() => {
-                    if (!this.keysPressed[e.key]) {
-                        clearInterval(this.timers[e.key]);
-                        delete this.timers[e.key];
-                    } else {
-                        func();
-                    }
-                })
-            }
+        return (e) => {
+            this.timers[e.key] = setInterval(() => {
+                if (!this.keysPressed[e.key]) {
+                    clearInterval(this.timers[e.key]);
+                    delete this.timers[e.key];
+                } else {
+                    func();
+                }
+            })
         }
     }
 
@@ -34,8 +31,23 @@ export class Game {
         return  (e) => {
             clearInterval(this.timers[e.key]); // タイマーをクリアします
             delete this.timers[e.key]; // タイマーの参照を削除します
-            this.keysPressed[e.key] = false;
             func();
+        }
+    }
+
+    pressKey = (func) => {
+        return (e) => {
+            if (!this.keysPressed[e.key]) {
+                this.keysPressed[e.key] = true;
+                func(e)
+            }
+        }
+    }
+
+    releaseKey = (func) => {
+        return (e) => {
+            func(e)
+            this.keysPressed[e.key] = false;
         }
     }
 
@@ -43,8 +55,8 @@ export class Game {
         if(!this.course) throw('No Course')
 
         this.controller.setTop(
-            this.mashButton(() => this.mainKart.accelerate(this.cm.ratio * this.camera.scale)),
-            this.endButton(() => this.mainKart.decelerate(this.cm.ratio * this.camera.scale))
+            this.pressKey(this.mashButton(() => this.mainKart.accelerate(this.cm.ratio * this.camera.scale))),
+            this.releaseKey(this.endButton(() => this.mainKart.decelerate(this.cm.ratio * this.camera.scale)))
         )
 
         this.controller.setBottom(
@@ -53,13 +65,13 @@ export class Game {
         )
 
         this.controller.setLeft(
-            () => this.mainKart.turnLeft(),
-            () => this.mainKart.goStraight()
+            this.pressKey(() => this.mainKart.turnLeft()),
+            this.releaseKey(() => this.mainKart.goStraight())
         )
 
         this.controller.setRight(
-            () => this.mainKart.turnRight(),
-            () => this.mainKart.goStraight()
+            this.pressKey(() => this.mainKart.turnRight()),
+            this.releaseKey(() => this.mainKart.goStraight())
         )
 
         this.camera.changeScale(7)
@@ -85,9 +97,10 @@ export class Game {
         this.updateCurrentTime(timestamp)
         this.cm.resetCanvas()
         this.cm.fillBackground()
-        this.mainKart.moveOnIdle(this.camera)
+
+        this.mainKart.moveOnIdle()
         this.camera.chaseMainKart(this.mainKart)
-        if(!this.course.isInsideObject(this.mainKart, this.camera)) {
+        if(!this.course.isInsideObject(this.camera)) {
             console.log(this.mainKart, this.camera)
         }
         this.cm.fillPolygon(this.course.frame, this.camera)
