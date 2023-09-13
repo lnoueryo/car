@@ -21,7 +21,7 @@ export class Game {
                     clearInterval(this.timers[e.key]);
                     delete this.timers[e.key];
                 } else {
-                    func();
+                    func(e);
                 }
             })
         }
@@ -51,6 +51,14 @@ export class Game {
         }
     }
 
+    disableKey = (func, key) => {
+        return (e) => {
+            // console.log(key)
+            if(this.keysPressed[key]) return console.log(key)
+            func(e)
+        }
+    }
+
     startGame() {
         if(!this.course) throw('No Course')
 
@@ -65,13 +73,13 @@ export class Game {
         )
 
         this.controller.setLeft(
-            this.pressKey(() => this.mainKart.turnLeft()),
-            this.releaseKey(() => this.mainKart.goStraight())
+            this.pressKey(this.mashButton(this.disableKey(() => this.mainKart.turnLeft(), 'ArrowRight'))),
+            this.releaseKey(this.endButton(() => this.mainKart.goStraight()))
         )
 
         this.controller.setRight(
-            this.pressKey(() => this.mainKart.turnRight()),
-            this.releaseKey(() => this.mainKart.goStraight())
+            this.pressKey(this.mashButton(this.disableKey(() => this.mainKart.turnRight(), 'ArrowLeft'))),
+            this.releaseKey(this.endButton(() => this.mainKart.goStraight()))
         )
 
         this.camera.changeScale(7)
