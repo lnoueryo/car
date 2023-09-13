@@ -13,17 +13,23 @@ const createMainPlayer = () => {
     const position = new Point(0, 0, 0)
     const color = 'blue'
     const mass = 300
+    const friction = 0
+    const restitution = 0
+    const maxVelocity = 5
+    const accelerationTime = 10
+    const decelerationRate = 0.0025
+    const brakeDecelerationRate = 0.01
     return new MainKart(
         vertices,
         position,
         color,
         mass,
-        0,
-        0,
-        5,
-        10,
-        0.0025,
-        0.01
+        friction,
+        restitution,
+        maxVelocity,
+        accelerationTime,
+        decelerationRate,
+        brakeDecelerationRate
     )
 }
 

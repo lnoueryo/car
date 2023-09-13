@@ -94,7 +94,7 @@ export class BaseObject {
         return this._vertices.map(vertex => {
             return vertex
             .addPoint(this.position.x - camera.position.x, this.position.y - camera.position.y, this.position.z - camera.position.z)
-            .rotatePoint(camera.findMidpoint(), 0 - camera.angle)
+            .rotatePoint(camera.findMidpoint(), this.angle - camera.angle)
         })
     }
 
