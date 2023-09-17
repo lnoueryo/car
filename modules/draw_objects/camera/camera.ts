@@ -2,9 +2,11 @@ import { Point } from "../point/point";
 import { DynamicObject } from "../base/dynamic_object";
 import { MainKart } from "../kart/main_kart";
 import { Vertex } from "../point/vertex";
+import { BaseObject } from "../base/base_object";
 
 export class Camera extends DynamicObject {
-    protected _scale: number = 1
+    protected _zoom: number = 1
+    private _canvasRatio : number = 1
     constructor(
         vertices: Vertex[],
         position: Point,
@@ -20,18 +22,28 @@ export class Camera extends DynamicObject {
         super(vertices, position, color, mass, friction, restitution, maxVelocity, accelerationTime, decelerationRate, brakeDecelerationRate)
     }
 
-    get scale() {
-        return this._scale
+    get zoom() {
+        return this._zoom
+    }
+
+    get canvasRatio() {
+        return this._canvasRatio
+    }
+
+    set zoom(zoom) {
+        this._zoom = zoom
+        BaseObject._zoomScale = this.canvasRatio * this.zoom
+    }
+
+    set canvasRatio(canvasRatio) {
+        this._canvasRatio = canvasRatio
+        BaseObject._zoomScale = this.canvasRatio * this.zoom
     }
 
     chaseMainKart(mainKart: MainKart) {
         this._position = mainKart.position
         this._vertices = mainKart.vertices
         this._angle = mainKart.direction
-    }
-
-    changeScale(scale: number) {
-        this._scale = scale;
     }
 
     createCourseCamera(vertices: Vertex[]) {
