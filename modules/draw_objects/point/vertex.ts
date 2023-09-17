@@ -1,5 +1,4 @@
 import { CanvasManager } from "../../canvas_manager";
-import { DynamicObject } from "../base/dynamic_object";
 import { Camera } from "../camera/camera";
 import { Point } from "./point";
 
@@ -27,16 +26,16 @@ export class Vertex extends Point {
     }
 
     adjustCameraScale(camera: Camera) {
-        const x = this.x * camera.scale;
-        const y = this.y * camera.scale;
-        const z = this.z * camera.scale;
+        const x = this.x * camera.zoom;
+        const y = this.y * camera.zoom;
+        const z = this.z * camera.zoom;
         return new Vertex(x, y, z, this.type)
     }
 
     adjustCanvasScale(cm: CanvasManager) {
-        const x = this.x * cm.ratio;
-        const y = this.y * cm.ratio;
-        const z = this.z * cm.ratio;
+        const x = this.x * cm.sizeRatio;
+        const y = this.y * cm.sizeRatio;
+        const z = this.z * cm.sizeRatio;
         return new Vertex(x, y, z, this.type)
     }
 

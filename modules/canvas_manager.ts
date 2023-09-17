@@ -118,7 +118,7 @@ export class CanvasManager {
         return this.canvas.height;
     }
 
-    get ratio() {
+    get sizeRatio() {
         return this.width / SIZE_RATIO;
     }
 

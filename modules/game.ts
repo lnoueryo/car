@@ -63,13 +63,13 @@ export class Game {
         if(!this.course) throw('No Course')
 
         this.controller.setTop(
-            this.pressKey(this.mashButton(() => this.mainKart.accelerate(this.cm.ratio * this.camera.scale))),
-            this.releaseKey(this.endButton(() => this.mainKart.decelerate(this.cm.ratio * this.camera.scale)))
+            this.pressKey(this.mashButton(() => this.mainKart.accelerate(this.cm.sizeRatio * this.camera.zoom))),
+            this.releaseKey(this.endButton(() => this.mainKart.decelerate(this.cm.sizeRatio * this.camera.zoom)))
         )
 
         this.controller.setBottom(
-            this.mashButton(() => this.mainKart.brake(this.cm.ratio)),
-            this.endButton(() => this.mainKart.decelerate(this.cm.ratio))
+            this.mashButton(() => this.mainKart.brake(this.cm.sizeRatio)),
+            this.endButton(() => this.mainKart.decelerate(this.cm.sizeRatio))
         )
 
         this.controller.setLeft(
@@ -82,7 +82,8 @@ export class Game {
             this.releaseKey(this.endButton(() => this.mainKart.goStraight()))
         )
 
-        this.camera.changeScale(7)
+        this.camera.zoom = 7
+        this.camera.canvasRatio = this.cm.sizeRatio
         this.setCourse()
         this.loop(0)
     }
@@ -111,7 +112,7 @@ export class Game {
         if(!this.course.isInsideObject(this.camera)) {
             const {x, y, z} = this.course.checkCrossedEdge(this.camera)
             this.mainKart._position = this.mainKart._position.addPoint(x, y, z)
-            this.mainKart.hitWall(this.cm.ratio * this.camera.scale)
+            this.mainKart.hitWall(this.cm.sizeRatio * this.camera.zoom)
             this.camera.chaseMainKart(this.mainKart)
         }
         this.cm.fillPolygon(this.course.frame, this.camera)

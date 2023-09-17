@@ -6,6 +6,7 @@ import { DynamicObject } from "./dynamic_object";
 
 export class BaseObject {
     protected _angle = 0
+    protected static _zoomScale = 1;
     constructor(
         public _vertices: Vertex[],
         public _position: Point,
@@ -57,6 +58,10 @@ export class BaseObject {
 
     get angle() {
         return this._angle
+    }
+
+    get zoomScale() {
+        return BaseObject._zoomScale
     }
 
     isPointInsidePolygon(point: Vertex) {
