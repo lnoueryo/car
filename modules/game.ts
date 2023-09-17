@@ -109,7 +109,10 @@ export class Game {
         this.mainKart.moveOnIdle()
         this.camera.chaseMainKart(this.mainKart)
         if(!this.course.isInsideObject(this.camera)) {
-            console.log(this.mainKart, this.camera)
+            const {x, y, z} = this.course.checkCrossedEdge(this.camera)
+            this.mainKart._position = this.mainKart._position.addPoint(x, y, z)
+            this.mainKart.hitWall(this.cm.ratio * this.camera.scale)
+            this.camera.chaseMainKart(this.mainKart)
         }
         this.cm.fillPolygon(this.course.frame, this.camera)
         for(let path of this.course.paths) {

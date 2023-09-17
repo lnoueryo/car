@@ -1,4 +1,3 @@
-import { CanvasManager } from "../../canvas_manager";
 import { Camera } from "../camera/camera";
 import { Point } from "../point/point";
 import { Vertex } from "../point/vertex";
@@ -42,7 +41,6 @@ export class DynamicObject extends BaseObject {
             this.startTime = (Date.now() - time * 1000)
             this.isDecelerating = false
         }
-        // const accelerationRatio = Math.min(2 / Math.PI * Math.atan(elapsedTime), 1);
         const maxVelocity = ratio * this.maxVelocity;
         this._velocity = maxVelocity * accelerationRatio;
         if(this._velocity > maxVelocity) {
@@ -50,6 +48,11 @@ export class DynamicObject extends BaseObject {
         }
     }
 
+    hitWall(ratio) {
+        this._velocity *= 0.95;
+        const time = this._velocity / (ratio * this.maxVelocity / this.accelerationTime)
+        this.startTime = (Date.now() - time * 1000)
+    }
 
     decelerate(ratio) {
         this.isDecelerating = true;

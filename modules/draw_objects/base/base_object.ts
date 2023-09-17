@@ -60,16 +60,36 @@ export class BaseObject {
     }
 
     isPointInsidePolygon(point: Vertex) {
-        let inside = false;
+        let intersections = 0;
         for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
             let xi = this.vertices[i].x, yi = this.vertices[i].y;
             let xj = this.vertices[j].x, yj = this.vertices[j].y;
-
-            let intersect = ((yi >= point.y) !== (yj >= point.y))
-                && (point.x <= (xj - xi) * (point.y - yi) / (yj - yi) + xi);
-            if (intersect) inside = !inside;
+            ((yi >= point.y) !== (yj >= point.y)) && (point.x <= (xj - xi) * (point.y - yi) / (yj - yi) + xi) && intersections++
         }
-        return inside;
+        return intersections % 2 === 1;
+    }
+
+    checkCrossedEdge(points: Vertex[]) {
+        const REBOUND_DISTANCE = 3
+        const minX = Math.min(...this.vertices.map(v => v.x));
+        const maxX = Math.max(...this.vertices.map(v => v.x));
+        const minY = Math.min(...this.vertices.map(v => v.y));
+        const maxY = Math.max(...this.vertices.map(v => v.y));
+        let x = 0;
+        let y = 0;
+        let z = 0;
+        for (const point of points) {
+            if (point.x < minX) {
+                x = minX - point.x + REBOUND_DISTANCE;
+            } else if (point.x > maxX) {
+                x = maxX - point.x - REBOUND_DISTANCE;
+            } else if (point.y < minY) {
+                y = minY - point.y + REBOUND_DISTANCE;
+            } else if (point.y > maxY) {
+                y = maxY - point.y - REBOUND_DISTANCE;
+            }
+        }
+        return new Point(x, y, z)
     }
 
     findMidpoint() {
