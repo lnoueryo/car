@@ -6,7 +6,7 @@ import { BaseObject } from "../base/base_object";
 
 export class Camera extends DynamicObject {
     protected _zoom: number = 1
-    private _canvasRatio : number = 1
+    private _canvasRatio: number = 1
     constructor(
         vertices: Vertex[],
         position: Point,
@@ -30,6 +30,10 @@ export class Camera extends DynamicObject {
         return this._canvasRatio
     }
 
+    get canvasCenter() {
+        return BaseObject._canvasCenter;
+    }
+
     set zoom(zoom) {
         this._zoom = zoom
         BaseObject._zoomScale = this.canvasRatio * this.zoom
@@ -40,16 +44,19 @@ export class Camera extends DynamicObject {
         BaseObject._zoomScale = this.canvasRatio * this.zoom
     }
 
+    set canvasCenter(canvasCenter) {
+        BaseObject._canvasCenter = canvasCenter
+    }
+
     chaseMainKart(mainKart: MainKart) {
-        this._position = mainKart.position
-        this._vertices = mainKart.vertices
+        this._position = mainKart._position
         this._angle = mainKart.direction
     }
 
     createCourseCamera(vertices: Vertex[]) {
         const newCamera = new Camera(
             vertices,
-            this.position,
+            this._position,
             this.color,
             this.mass,
             this.friction,

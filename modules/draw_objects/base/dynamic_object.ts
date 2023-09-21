@@ -100,9 +100,10 @@ export class DynamicObject extends BaseObject {
 
     createVerticesForDrawing(camera: Camera): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
-        return this._vertices.map(vertex => {
+        return this.vertices.map(vertex => {
             return vertex
-            .addPoint(this.position.x - camera.position.x, this.position.y - camera.position.y , this.position.z - camera.position.z)
+            // .movePoint(- camera.position.x, - camera.position.y, - camera.position.z)
+            .movePoint(this.position.x - camera.position.x + this.canvasCenter.x, this.position.y - camera.position.y + this.canvasCenter.y, this.position.z - camera.position.z + this.canvasCenter.z)
             .rotatePoint(camera.findMidpoint(), this.direction - camera.angle)
         })
     }

@@ -21,10 +21,6 @@ export class Vertex extends Point {
         return this._type
     }
 
-    addPoint(x: number, y: number, z: number) {
-        return new Vertex(this.x + x, this.y + y, this.z + z, this.type)
-    }
-
     adjustCameraScale(camera: Camera) {
         const x = this.x * camera.zoom;
         const y = this.y * camera.zoom;
@@ -52,5 +48,19 @@ export class Vertex extends Point {
         // const z = this.x * matrix[2][0] + this.y * matrix[2][1] + this.z * matrix[2][2];
 
         return new Vertex(x, y, z, this.type)
+    }
+
+
+    multipliedByScale(scale: number) {
+        const {x, y, z, type} = this
+        return new Vertex(x * scale, y * scale, z * scale, type)
+    }
+
+    addPoint(point: Point) {
+        return new Vertex(point.x, point.y, point.z, this.type)
+    }
+
+    movePoint(x: number, y: number, z: number) {
+        return new Vertex(this.x + x, this.y + y, this.z + z, this.type)
     }
 }

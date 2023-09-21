@@ -1,12 +1,11 @@
-import { CanvasManager } from "../../canvas_manager";
 import { Camera } from "../camera/camera";
 import { Point } from "../point/point"
 import { Vertex } from "../point/vertex";
-import { DynamicObject } from "./dynamic_object";
 
 export class BaseObject {
     protected _angle = 0
-    protected static _zoomScale = 1;
+    static _zoomScale = 1;
+    static _canvasCenter = new Point(0, 0, 0);
     constructor(
         public _vertices: Vertex[],
         public _position: Point,
@@ -41,11 +40,7 @@ export class BaseObject {
     }
 
     get position() {
-        return this._position
-    }
-
-    get vertices() {
-        return this._vertices
+        return this._position.multipliedByScale(this.zoomScale)
     }
 
     get baseVertex() {
@@ -62,6 +57,26 @@ export class BaseObject {
 
     get zoomScale() {
         return BaseObject._zoomScale
+    }
+
+    get canvasCenter() {
+        return BaseObject._canvasCenter
+    }
+
+    get vertices() {
+        return this._vertices.map(vertex => vertex.multipliedByScale(this.zoomScale))
+    }
+
+    // get vertices() {
+    //     return this._vertices.map(vertex => vertex.multipliedByScale(this.zoomScale).addPoint(this.canvasCenter).addPoint(this.position))
+    // }
+
+    get zoomedVertices() {
+        return this._vertices.map(vertex => vertex.multipliedByScale(this.zoomScale))
+    }
+
+    get centeredZoomedVertices() {
+        return this._vertices.map(vertex => vertex.multipliedByScale(this.zoomScale).addPoint(this.canvasCenter))
     }
 
     isPointInsidePolygon(point: Vertex) {
@@ -98,15 +113,19 @@ export class BaseObject {
     }
 
     findMidpoint() {
-        const sum = this._vertices.reduce((acc, vertex) => {
+        const sum = this.vertices.reduce((acc, vertex) => {
+            const {x, y, z} = vertex
             return {
-                x: acc.x + vertex.x,
-                y: acc.y + vertex.y,
-                z: acc.z + vertex.z, // 3Dを考慮する場合はコメントを外してください。
+                // x: acc.x + vertex.x,
+                // y: acc.y + vertex.y,
+                // z: acc.z + vertex.z,
+                x: acc.x + x + this.canvasCenter.x,
+                y: acc.y + y + this.canvasCenter.y,
+                z: acc.z + z + this.canvasCenter.z,
             };
         }, { x: 0, y: 0, z: 0 }); // 初期値
 
-        const num_Vertices = this._vertices.length;
+        const num_Vertices = this.vertices.length;
         return new Point(sum.x / num_Vertices, sum.y / num_Vertices, sum.z / num_Vertices); // 3Dの場合はこちらも変更
     }
 
@@ -116,9 +135,10 @@ export class BaseObject {
 
     createVerticesForDrawing(camera: Camera): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
-        return this._vertices.map(vertex => {
+        return this.vertices.map(vertex => {
             return vertex
-            .addPoint(this.position.x - camera.position.x, this.position.y - camera.position.y, this.position.z - camera.position.z)
+            // .movePoint(- camera.position.x, - camera.position.y, - camera.position.z)
+            .movePoint(this.position.x - camera.position.x + this.canvasCenter.x, this.position.y - camera.position.y + this.canvasCenter.y, this.position.z - camera.position.z + this.canvasCenter.z)
             .rotatePoint(camera.findMidpoint(), this.angle - camera.angle)
         })
     }

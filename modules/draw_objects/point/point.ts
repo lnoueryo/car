@@ -13,10 +13,6 @@ export class Point {
         return new Point(x, y, z)
     }
 
-    addPoint(x: number, y: number, z: number) {
-        return new Point(this.x + x, this.y + y, this.z + z)
-    }
-
     getBase(point) {
         //底辺
         return point.x - this.x;
@@ -41,5 +37,18 @@ export class Point {
         const y = this.y * cm.sizeRatio;
         const z = this.z * cm.sizeRatio;
         return new Point(x, y, z)
+    }
+
+    multipliedByScale(scale: number) {
+        const {x, y, z} = this
+        return new Point(x * scale, y * scale, z * scale)
+    }
+
+    addPoint(point: Point) {
+        return new Point(point.x, point.y, point.z)
+    }
+
+    movePoint(x: number, y: number, z: number) {
+        return new Point(this.x + x, this.y + y, this.z + z)
     }
 }
