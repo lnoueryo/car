@@ -12,7 +12,7 @@ const CANVAS_RATIO = CANVAS_WIDTH_PIXEL / CANVAS_HEIGHT_PIXEL
 const SIZE_RATIO = 1000
 const PLAYER_DELAY = 1
 export class CanvasManager {
-    private ctx;
+    public ctx;
     constructor(private canvas: HTMLCanvasElement) {
         canvas.width = CANVAS_WIDTH_PIXEL;
         canvas.height = CANVAS_HEIGHT_PIXEL;

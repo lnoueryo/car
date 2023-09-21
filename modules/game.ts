@@ -3,6 +3,7 @@ import { Controller } from "./controller"
 import { Course } from "./course/course";
 import { Camera } from "./draw_objects/camera/camera";
 import { MainKart } from "./draw_objects/kart/main_kart"
+import { Point } from "./draw_objects/point/point";
 
 export class Game {
     private course: Course
@@ -81,24 +82,27 @@ export class Game {
             this.pressKey(this.mashButton(this.disableKey(() => this.mainKart.turnRight(), 'ArrowLeft'))),
             this.releaseKey(this.endButton(() => this.mainKart.goStraight()))
         )
-
         this.camera.zoom = 7
         this.camera.canvasRatio = this.cm.sizeRatio
+        this.camera.canvasCenter = new Point(this.cm.width / 2, this.cm.height / 2, 0)
+        // setInterval(() => {
+        //     console.log(this.camera.findMidpoint())
+        // }, 500)
         this.setCourse()
         this.loop(0)
     }
 
     private setCourse() {
-        this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
-        this.course.frame._position = this.course.frame.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
-        this.course._paths = this.course.paths.map(path => {
-            path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
-            path._position = path.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
-            return path
-        })
-        this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).addPoint(this.cm.width / 2, this.cm.height / 2, 0))
-        this.mainKart._position = this.mainKart.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
-        this.camera.chaseMainKart(this.mainKart)
+        // this.course.frame._vertices = this.course.frame._vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).movePoint(this.cm.width / 2, this.cm.height / 2, 0))
+        // this.course.frame._position = this.course.frame._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+        // this.course._paths = this.course.paths.map(path => {
+        //     path._vertices = path._vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).movePoint(this.cm.width / 2, this.cm.height / 2, 0))
+        //     path._position = path._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+        //     return path
+        // })
+        // this.mainKart._vertices = this.mainKart._vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).movePoint(this.cm.width / 2, this.cm.height / 2, 0))
+        // this.mainKart._position = this.mainKart._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+        // this.camera.chaseMainKart(this.mainKart)
     }
 
     private loop = (timestamp) => {
@@ -110,8 +114,8 @@ export class Game {
         this.mainKart.moveOnIdle()
         this.camera.chaseMainKart(this.mainKart)
         if(!this.course.isInsideObject(this.camera)) {
-            const {x, y, z} = this.course.checkCrossedEdge(this.camera)
-            this.mainKart._position = this.mainKart._position.addPoint(x, y, z)
+            const point = this.course.checkCrossedEdge(this.camera)
+            this.mainKart._position = this.mainKart._position.movePoint(point)
             this.mainKart.hitWall(this.cm.sizeRatio * this.camera.zoom)
             this.camera.chaseMainKart(this.mainKart)
         }
@@ -120,6 +124,11 @@ export class Game {
             this.cm.fillPolygon(path, this.camera)
         }
         this.cm.fillPolygon(this.mainKart, this.camera)
+        this.cm.ctx.fillStyle = 'black';
+        this.cm.ctx.beginPath();
+        const point = this.camera.findMidpoint()
+        this.cm.ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
+        this.cm.ctx.fill();
         // if(up_push && left_push) {
         //     this.cm.ctx.fillStyle = "red" ;
         // }

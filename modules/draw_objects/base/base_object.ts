@@ -76,7 +76,11 @@ export class BaseObject {
     }
 
     get centeredZoomedVertices() {
-        return this._vertices.map(vertex => vertex.multipliedByScale(this.zoomScale).addPoint(this.canvasCenter))
+        return this._vertices.map(vertex => vertex.multipliedByScale(this.zoomScale).movePoint(this.canvasCenter))
+    }
+
+    get centeredZoomedPositionVertices() {
+        return this._vertices.map(vertex => vertex.multipliedByScale(this.zoomScale).movePoint(this.canvasCenter).movePoint(this.position))
     }
 
     isPointInsidePolygon(point: Vertex) {
@@ -114,14 +118,10 @@ export class BaseObject {
 
     findMidpoint() {
         const sum = this.vertices.reduce((acc, vertex) => {
-            const {x, y, z} = vertex
             return {
-                // x: acc.x + vertex.x,
-                // y: acc.y + vertex.y,
-                // z: acc.z + vertex.z,
-                x: acc.x + x + this.canvasCenter.x,
-                y: acc.y + y + this.canvasCenter.y,
-                z: acc.z + z + this.canvasCenter.z,
+                x: acc.x + vertex.movePoint(this.canvasCenter).x,
+                y: acc.y + vertex.movePoint(this.canvasCenter).y,
+                z: acc.z + vertex.movePoint(this.canvasCenter).z,
             };
         }, { x: 0, y: 0, z: 0 }); // 初期値
 
@@ -136,9 +136,14 @@ export class BaseObject {
     createVerticesForDrawing(camera: Camera): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this.vertices.map(vertex => {
+            const {x, y, z} = camera.position
+            const point = new Vertex(-x, -y, -z, vertex.type)
             return vertex
-            // .movePoint(- camera.position.x, - camera.position.y, - camera.position.z)
-            .movePoint(this.position.x - camera.position.x + this.canvasCenter.x, this.position.y - camera.position.y + this.canvasCenter.y, this.position.z - camera.position.z + this.canvasCenter.z)
+            // .movePoint(-camera.position.x, -camera.position.y, -camera.position.z)
+            // .movePoint(this.position.x - camera.position.x + this.canvasCenter.x, this.position.y - camera.position.y + this.canvasCenter.y, this.position.z - camera.position.z + this.canvasCenter.z)
+            .movePoint(point)
+            .movePoint(this.position)
+            .movePoint(this.canvasCenter)
             .rotatePoint(camera.findMidpoint(), this.angle - camera.angle)
         })
     }

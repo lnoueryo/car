@@ -60,7 +60,8 @@ export class Vertex extends Point {
         return new Vertex(point.x, point.y, point.z, this.type)
     }
 
-    movePoint(x: number, y: number, z: number) {
+    movePoint(point: Point) {
+        const {x, y, z} = point
         return new Vertex(this.x + x, this.y + y, this.z + z, this.type)
     }
 }

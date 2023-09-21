@@ -48,7 +48,8 @@ export class Point {
         return new Point(point.x, point.y, point.z)
     }
 
-    movePoint(x: number, y: number, z: number) {
+    movePoint(point: Point) {
+        const {x, y, z} = point
         return new Point(this.x + x, this.y + y, this.z + z)
     }
 }
