@@ -6,7 +6,8 @@ import { DynamicObject } from "./dynamic_object";
 
 export class BaseObject {
     protected _angle = 0
-    protected static _zoomScale = 1;
+    static _zoomScale = 1;
+    static _canvasCenter = new Point(0, 0, 0);
     constructor(
         public _vertices: Vertex[],
         public _position: Point,
@@ -64,11 +65,15 @@ export class BaseObject {
         return BaseObject._zoomScale
     }
 
+    get canvasCenter() {
+        return BaseObject._canvasCenter
+    }
+
     isPointInsidePolygon(point: Vertex) {
         let intersections = 0;
         for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
-            let xi = this.vertices[i].x, yi = this.vertices[i].y;
-            let xj = this.vertices[j].x, yj = this.vertices[j].y;
+            let xi = this.vertices[i].movePoint(BaseObject._canvasCenter).x, yi = this.vertices[i].movePoint(BaseObject._canvasCenter).y;
+            let xj = this.vertices[j].movePoint(BaseObject._canvasCenter).x, yj = this.vertices[j].movePoint(BaseObject._canvasCenter).y;
             ((yi >= point.y) !== (yj >= point.y)) && (point.x <= (xj - xi) * (point.y - yi) / (yj - yi) + xi) && intersections++
         }
         return intersections % 2 === 1;
@@ -76,10 +81,10 @@ export class BaseObject {
 
     checkCrossedEdge(points: Vertex[]) {
         const REBOUND_DISTANCE = 3
-        const minX = Math.min(...this.vertices.map(v => v.x));
-        const maxX = Math.max(...this.vertices.map(v => v.x));
-        const minY = Math.min(...this.vertices.map(v => v.y));
-        const maxY = Math.max(...this.vertices.map(v => v.y));
+        const minX = Math.min(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
+        const maxX = Math.max(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
+        const minY = Math.min(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
+        const maxY = Math.max(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
         let x = 0;
         let y = 0;
         let z = 0;
@@ -100,9 +105,9 @@ export class BaseObject {
     findMidpoint() {
         const sum = this._vertices.reduce((acc, vertex) => {
             return {
-                x: acc.x + vertex.x,
-                y: acc.y + vertex.y,
-                z: acc.z + vertex.z, // 3Dを考慮する場合はコメントを外してください。
+                x: acc.x + vertex.movePoint(BaseObject._canvasCenter).x,
+                y: acc.y + vertex.movePoint(BaseObject._canvasCenter).y,
+                z: acc.z + vertex.movePoint(BaseObject._canvasCenter).z, // 3Dを考慮する場合はコメントを外してください。
             };
         }, { x: 0, y: 0, z: 0 }); // 初期値
 
@@ -119,6 +124,7 @@ export class BaseObject {
         return this._vertices.map(vertex => {
             const point = new Point(this.position.x - camera.position.x, this.position.y - camera.position.y, this.position.z - camera.position.z)
             return vertex
+            .movePoint(BaseObject._canvasCenter)
             .movePoint(point)
             .rotatePoint(camera.findMidpoint(), this.angle - camera.angle)
         })

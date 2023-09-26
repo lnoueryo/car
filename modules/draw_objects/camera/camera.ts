@@ -40,6 +40,10 @@ export class Camera extends DynamicObject {
         BaseObject._zoomScale = this.canvasRatio * this.zoom
     }
 
+    set canvasCenter(canvasCenter) {
+        BaseObject._canvasCenter = canvasCenter
+    }
+
     chaseMainKart(mainKart: MainKart) {
         this._position = mainKart.position
         this._vertices = mainKart.vertices

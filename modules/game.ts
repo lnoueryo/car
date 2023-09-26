@@ -3,6 +3,7 @@ import { Controller } from "./controller"
 import { Course } from "./course/course";
 import { Camera } from "./draw_objects/camera/camera";
 import { MainKart } from "./draw_objects/kart/main_kart"
+import { Point } from "./draw_objects/point/point";
 import { Vertex } from "./draw_objects/point/vertex";
 
 export class Game {
@@ -85,19 +86,20 @@ export class Game {
 
         this.camera.zoom = 7
         this.camera.canvasRatio = this.cm.sizeRatio
+        this.camera.canvasCenter = new Point(this.cm.width / 2, this.cm.height / 2, 0)
         this.setCourse()
         this.loop(0)
     }
 
     private setCourse() {
-        this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).movePoint(new Vertex(this.cm.width / 2, this.cm.height / 2, 0, vertex.type)))
+        this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
         this.course.frame._position = this.course.frame.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
         this.course._paths = this.course.paths.map(path => {
-            path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).movePoint(new Vertex(this.cm.width / 2, this.cm.height / 2, 0, vertex.type)))
+            path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
             path._position = path.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
             return path
         })
-        this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera).movePoint(new Vertex(this.cm.width / 2, this.cm.height / 2, 0, vertex.type)))
+        this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
         this.mainKart._position = this.mainKart.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
         this.camera.chaseMainKart(this.mainKart)
     }

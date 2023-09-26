@@ -1,3 +1,4 @@
+import { BaseObject } from "../draw_objects/base/base_object";
 import { Camera } from "../draw_objects/camera/camera";
 import { MainKart } from "../draw_objects/kart/main_kart";
 import { Path } from "../draw_objects/path/path";
@@ -43,14 +44,14 @@ export class Course {
     isInsideObject(camera: Camera) {
         const vertices = camera.vertices.map(vertex => vertex.movePoint(camera._position))
         const newCamera = camera.createCourseCamera(vertices)
-        return vertices.every(vertex => this.frame.isPointInsidePolygon(vertex.rotatePoint(newCamera.findMidpoint(), newCamera.angle)));
+        return vertices.every(vertex => this.frame.isPointInsidePolygon(vertex.movePoint(BaseObject._canvasCenter).rotatePoint(newCamera.findMidpoint(), newCamera.angle)));
     }
 
     checkCrossedEdge(camera: Camera) {
         const vertices = camera.vertices.map(vertex => vertex.movePoint(camera._position))
         const newCamera = camera.createCourseCamera(vertices)
-        const newVertices = vertices.filter(vertex => !this.frame.isPointInsidePolygon(vertex.rotatePoint(newCamera.findMidpoint(), newCamera.angle)));
-        return newVertices.length != 0 ? this.frame.checkCrossedEdge(newVertices.map(vertex => vertex.rotatePoint(newCamera.findMidpoint(), newCamera.angle))) : new Point(0,0,0)
+        const newVertices = vertices.filter(vertex => !this.frame.isPointInsidePolygon(vertex.movePoint(BaseObject._canvasCenter).rotatePoint(newCamera.findMidpoint(), newCamera.angle)));
+        return newVertices.length != 0 ? this.frame.checkCrossedEdge(newVertices.map(vertex => vertex.movePoint(BaseObject._canvasCenter).rotatePoint(newCamera.findMidpoint(), newCamera.angle))) : new Point(0,0,0)
     }
 
 }

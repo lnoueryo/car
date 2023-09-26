@@ -103,6 +103,7 @@ export class DynamicObject extends BaseObject {
         return this._vertices.map(vertex => {
             const point = new Point(this.position.x - camera.position.x, this.position.y - camera.position.y, this.position.z - camera.position.z)
             return vertex
+            .movePoint(BaseObject._canvasCenter)
             .movePoint(point)
             .rotatePoint(camera.findMidpoint(), this.direction - camera.angle)
         })
