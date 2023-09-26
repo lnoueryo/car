@@ -43,4 +43,9 @@ export class Point {
         return new Point(this.x + point.x, this.y + point.y, this.z + point.z)
     }
 
+    multipliedByScale(scale) {
+        const {x, y, z} = this
+        return  new Point(x * scale, y * scale, z * scale)
+    }
+
 }

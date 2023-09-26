@@ -54,4 +54,9 @@ export class Vertex extends Point {
         return new Vertex(this.x + point.x, this.y + point.y, this.z + point.z, this.type)
     }
 
+    multipliedByScale(scale) {
+        const {x, y, z, type} = this
+        return  new Vertex(x * scale, y * scale, z * scale, type)
+    }
+
 }
