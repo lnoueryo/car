@@ -1,6 +1,7 @@
 import { CanvasManager } from "./canvas_manager"
 import { Controller } from "./controller"
 import { Course } from "./course/course";
+import { BaseObject } from "./draw_objects/base/base_object";
 import { Camera } from "./draw_objects/camera/camera";
 import { MainKart } from "./draw_objects/kart/main_kart"
 import { Point } from "./draw_objects/point/point";
@@ -92,15 +93,15 @@ export class Game {
     }
 
     private setCourse() {
-        this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
-        this.course.frame._position = this.course.frame._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+        this.course.frame._vertices = this.course.frame._vertices.map(vertex => vertex.multipliedByScale(BaseObject._zoomScale))
+        this.course.frame._position = this.course.frame._position.multipliedByScale(BaseObject._zoomScale)
         this.course._paths = this.course.paths.map(path => {
-            path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
-            path._position = path._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+            path._vertices = path._vertices.map(vertex => vertex.multipliedByScale(BaseObject._zoomScale))
+            path._position = path._position.multipliedByScale(BaseObject._zoomScale)
             return path
         })
-        this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
-        this.mainKart._position = this.mainKart._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+        this.mainKart._vertices = this.mainKart._vertices.map(vertex => vertex.multipliedByScale(BaseObject._zoomScale))
+        this.mainKart._position = this.mainKart._position.multipliedByScale(BaseObject._zoomScale)
         this.camera.chaseMainKart(this.mainKart)
     }
 

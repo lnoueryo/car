@@ -71,9 +71,9 @@ export class BaseObject {
 
     isPointInsidePolygon(point: Vertex) {
         let intersections = 0;
-        for (let i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
-            let xi = this.vertices[i].movePoint(BaseObject._canvasCenter).x, yi = this.vertices[i].movePoint(BaseObject._canvasCenter).y;
-            let xj = this.vertices[j].movePoint(BaseObject._canvasCenter).x, yj = this.vertices[j].movePoint(BaseObject._canvasCenter).y;
+        for (let i = 0, j = this._vertices.length - 1; i < this._vertices.length; j = i++) {
+            let xi = this._vertices[i].movePoint(BaseObject._canvasCenter).x, yi = this._vertices[i].movePoint(BaseObject._canvasCenter).y;
+            let xj = this._vertices[j].movePoint(BaseObject._canvasCenter).x, yj = this._vertices[j].movePoint(BaseObject._canvasCenter).y;
             ((yi >= point.y) !== (yj >= point.y)) && (point.x <= (xj - xi) * (point.y - yi) / (yj - yi) + xi) && intersections++
         }
         return intersections % 2 === 1;
@@ -81,10 +81,10 @@ export class BaseObject {
 
     checkCrossedEdge(points: Vertex[]) {
         const REBOUND_DISTANCE = 3
-        const minX = Math.min(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
-        const maxX = Math.max(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
-        const minY = Math.min(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
-        const maxY = Math.max(...this.vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
+        const minX = Math.min(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
+        const maxX = Math.max(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
+        const minY = Math.min(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
+        const maxY = Math.max(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
         let x = 0;
         let y = 0;
         let z = 0;
