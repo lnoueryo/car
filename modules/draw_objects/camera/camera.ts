@@ -45,15 +45,15 @@ export class Camera extends DynamicObject {
     }
 
     chaseMainKart(mainKart: MainKart) {
-        this._position = mainKart.position
-        this._vertices = mainKart.vertices
+        this._position = mainKart._position
+        this._vertices = mainKart._vertices
         this._angle = mainKart.direction
     }
 
     createCourseCamera(vertices: Vertex[]) {
         const newCamera = new Camera(
             vertices,
-            this.position,
+            this._position,
             this.color,
             this.mass,
             this.friction,
@@ -68,7 +68,7 @@ export class Camera extends DynamicObject {
     }
 
     rotationMatrix() {
-        const axis = this.position
+        const axis = this._position
         const angle = this.angle
 
         let c = Math.cos(angle);

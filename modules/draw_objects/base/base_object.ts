@@ -122,7 +122,7 @@ export class BaseObject {
     createVerticesForDrawing(camera: Camera): Vertex[] {
         // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this._vertices.map(vertex => {
-            const point = new Point(this.position.x - camera.position.x, this.position.y - camera.position.y, this.position.z - camera.position.z)
+            const point = new Point(this._position.x - camera._position.x, this._position.y - camera._position.y, this._position.z - camera._position.z)
             return vertex
             .movePoint(BaseObject._canvasCenter)
             .movePoint(point)

@@ -93,14 +93,14 @@ export class Game {
 
     private setCourse() {
         this.course.frame._vertices = this.course.frame.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
-        this.course.frame._position = this.course.frame.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+        this.course.frame._position = this.course.frame._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
         this.course._paths = this.course.paths.map(path => {
             path._vertices = path.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
-            path._position = path.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+            path._position = path._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
             return path
         })
         this.mainKart._vertices = this.mainKart.vertices.map(vertex => vertex.adjustCanvasScale(this.cm).adjustCameraScale(this.camera))
-        this.mainKart._position = this.mainKart.position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
+        this.mainKart._position = this.mainKart._position.adjustCanvasScale(this.cm).adjustCameraScale(this.camera)
         this.camera.chaseMainKart(this.mainKart)
     }
 
