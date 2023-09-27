@@ -42,11 +42,7 @@ export class BaseObject {
     }
 
     get position() {
-        return this._position
-    }
-
-    get vertices() {
-        return this._vertices
+        return this._position.multipliedByScale(BaseObject._zoomScale)
     }
 
     get baseVertex() {
@@ -72,19 +68,19 @@ export class BaseObject {
     isPointInsidePolygon(point: Vertex) {
         let intersections = 0;
         for (let i = 0, j = this._vertices.length - 1; i < this._vertices.length; j = i++) {
-            let xi = this._vertices[i].movePoint(BaseObject._canvasCenter).x, yi = this._vertices[i].movePoint(BaseObject._canvasCenter).y;
-            let xj = this._vertices[j].movePoint(BaseObject._canvasCenter).x, yj = this._vertices[j].movePoint(BaseObject._canvasCenter).y;
+            let xi = this._vertices[i].x, yi = this._vertices[i].y;
+            let xj = this._vertices[j].x, yj = this._vertices[j].y;
             ((yi >= point.y) !== (yj >= point.y)) && (point.x <= (xj - xi) * (point.y - yi) / (yj - yi) + xi) && intersections++
         }
         return intersections % 2 === 1;
     }
 
     checkCrossedEdge(points: Vertex[]) {
-        const REBOUND_DISTANCE = 3
-        const minX = Math.min(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
-        const maxX = Math.max(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).x));
-        const minY = Math.min(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
-        const maxY = Math.max(...this._vertices.map(v => v.movePoint(BaseObject._canvasCenter).y));
+        const REBOUND_DISTANCE = 1
+        const minX = Math.min(...this._vertices.map(v => v.x));
+        const maxX = Math.max(...this._vertices.map(v => v.x));
+        const minY = Math.min(...this._vertices.map(v => v.y));
+        const maxY = Math.max(...this._vertices.map(v => v.y));
         let x = 0;
         let y = 0;
         let z = 0;
@@ -105,9 +101,9 @@ export class BaseObject {
     findMidpoint() {
         const sum = this._vertices.reduce((acc, vertex) => {
             return {
-                x: acc.x + vertex.movePoint(BaseObject._canvasCenter).x,
-                y: acc.y + vertex.movePoint(BaseObject._canvasCenter).y,
-                z: acc.z + vertex.movePoint(BaseObject._canvasCenter).z, // 3Dを考慮する場合はコメントを外してください。
+                x: acc.x + vertex.x,
+                y: acc.y + vertex.y,
+                z: acc.z + vertex.z, // 3Dを考慮する場合はコメントを外してください。
             };
         }, { x: 0, y: 0, z: 0 }); // 初期値
 
@@ -120,13 +116,13 @@ export class BaseObject {
     }
 
     createVerticesForDrawing(camera: Camera): Vertex[] {
-        // 新しく作成したverticesのインスタンスにcanvasとcameraのスケールを計算し、現在地、カメラの位置、スタートの位置を足し
         return this._vertices.map(vertex => {
-            const point = new Point(this._position.x - camera._position.x, this._position.y - camera._position.y, this._position.z - camera._position.z)
+            const point = new Point(this.position.x - camera.position.x, this.position.y - camera.position.y, this.position.z - camera.position.z)
             return vertex
+            .multipliedByScale(BaseObject._zoomScale)
             .movePoint(BaseObject._canvasCenter)
             .movePoint(point)
-            .rotatePoint(camera.findMidpoint(), this.angle - camera.angle)
+            .rotatePoint(camera.findMidpoint().multipliedByScale(BaseObject._zoomScale).movePoint(BaseObject._canvasCenter), this.angle - camera.angle)
         })
     }
 

@@ -50,23 +50,6 @@ export class Camera extends DynamicObject {
         this._angle = mainKart.direction
     }
 
-    createCourseCamera(vertices: Vertex[]) {
-        const newCamera = new Camera(
-            vertices,
-            this._position,
-            this.color,
-            this.mass,
-            this.friction,
-            this.restitution,
-            this.maxVelocity,
-            this.accelerationTime,
-            this.decelerationRate,
-            this.brakeDecelerationRate
-        )
-        newCamera._angle = -this._angle
-        return newCamera
-    }
-
     rotationMatrix() {
         const axis = this._position
         const angle = this.angle

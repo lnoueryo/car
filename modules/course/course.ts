@@ -42,16 +42,12 @@ export class Course {
     }
 
     isInsideObject(camera: Camera) {
-        const vertices = camera._vertices.map(vertex => vertex.movePoint(camera._position))
-        const newCamera = camera.createCourseCamera(vertices)
-        return vertices.every(vertex => this.frame.isPointInsidePolygon(vertex.movePoint(BaseObject._canvasCenter).rotatePoint(newCamera.findMidpoint(), newCamera.angle)));
+        return camera._vertices.every(vertex => this.frame.isPointInsidePolygon(vertex.movePoint(camera._position).rotatePoint(camera.findMidpoint().movePoint(camera._position), -camera.angle)));
     }
 
     checkCrossedEdge(camera: Camera) {
-        const vertices = camera._vertices.map(vertex => vertex.movePoint(camera._position))
-        const newCamera = camera.createCourseCamera(vertices)
-        const newVertices = vertices.filter(vertex => !this.frame.isPointInsidePolygon(vertex.movePoint(BaseObject._canvasCenter).rotatePoint(newCamera.findMidpoint(), newCamera.angle)));
-        return newVertices.length != 0 ? this.frame.checkCrossedEdge(newVertices.map(vertex => vertex.movePoint(BaseObject._canvasCenter).rotatePoint(newCamera.findMidpoint(), newCamera.angle))) : new Point(0,0,0)
+        const newVertices = camera._vertices.filter(vertex => !this.frame.isPointInsidePolygon(vertex.movePoint(camera._position).rotatePoint(camera.findMidpoint().movePoint(camera._position), -camera.angle)));
+        return newVertices.length != 0 ? this.frame.checkCrossedEdge(newVertices.map(vertex => vertex.movePoint(camera._position).rotatePoint(camera.findMidpoint().movePoint(camera._position), -camera.angle))) : new Point(0,0,0)
     }
 
 }

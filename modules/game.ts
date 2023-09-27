@@ -88,21 +88,7 @@ export class Game {
         this.camera.zoom = 7
         this.camera.canvasRatio = this.cm.sizeRatio
         this.camera.canvasCenter = new Point(this.cm.width / 2, this.cm.height / 2, 0)
-        this.setCourse()
         this.loop(0)
-    }
-
-    private setCourse() {
-        this.course.frame._vertices = this.course.frame._vertices.map(vertex => vertex.multipliedByScale(BaseObject._zoomScale))
-        this.course.frame._position = this.course.frame._position.multipliedByScale(BaseObject._zoomScale)
-        this.course._paths = this.course.paths.map(path => {
-            path._vertices = path._vertices.map(vertex => vertex.multipliedByScale(BaseObject._zoomScale))
-            path._position = path._position.multipliedByScale(BaseObject._zoomScale)
-            return path
-        })
-        this.mainKart._vertices = this.mainKart._vertices.map(vertex => vertex.multipliedByScale(BaseObject._zoomScale))
-        this.mainKart._position = this.mainKart._position.multipliedByScale(BaseObject._zoomScale)
-        this.camera.chaseMainKart(this.mainKart)
     }
 
     private loop = (timestamp) => {
